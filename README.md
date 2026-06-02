@@ -100,3 +100,9 @@ sequenceDiagram
    ```bash
    node map_real_images.js
    ```
+
+---
+
+## 👥 Contributors
+
+* **Amandeep** ([amanverma0001](https://github.com/amanverma0001)) - Lead Developer

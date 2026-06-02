@@ -1,41 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Amazon Premium - Shop Smart Deals</title>
-  <meta name="description" content="Discover premium electronics, home essentials, wellness fitness gear, and modern accessories on Amazon Premium. Fast simulated checkout and dynamic interactive features.">
-  <link rel="stylesheet" href="styles.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amazon Premium - Shop Smart Deals</title>
+    <meta name="description" content="Discover premium electronics, home essentials, wellness fitness gear, and modern accessories on Amazon Premium. Fast simulated checkout and dynamic interactive features.">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
+
 <body>
 
-  <!-- Top Sticky Navigation Header -->
-  <header>
-    <div class="nav-main">
-      <!-- Amazon Premium Logo -->
-      <a href="#" class="brand-logo" id="header-logo">
+    <!-- Top Sticky Navigation Header -->
+    <header>
+        <div class="nav-main">
+            <!-- Amazon Premium Logo -->
+            <a href="#" class="brand-logo" id="header-logo">
         amazon<span>premium</span>
       </a>
 
-      <!-- Delivery Location Selector (Interactive Mock) -->
-      <div class="nav-location" id="nav-delivery-target" onclick="openAddressModal()">
-        <!-- SVG Pin Icon -->
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#febd69" stroke-width="2">
+            <!-- Delivery Location Selector (Interactive Mock) -->
+            <div class="nav-location" id="nav-delivery-target" onclick="openAddressModal()">
+                <!-- SVG Pin Icon -->
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#febd69" stroke-width="2">
           <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
           <circle cx="12" cy="10" r="3"></circle>
         </svg>
-        <div class="nav-location-text" id="header-delivery-label">
-          Deliver to Customer
-          <strong>New Delhi 110001</strong>
-        </div>
-      </div>
+                <div class="nav-location-text" id="header-delivery-label">
+                    Deliver to Customer
+                    <strong>New Delhi 110001</strong>
+                </div>
+            </div>
 
-      <!-- Live Search / Category Filters Bar -->
-      <div class="nav-search">
-        <select class="search-select" id="search-dept-select">
+            <!-- Live Search / Category Filters Bar -->
+            <div class="nav-search">
+                <select class="search-select" id="search-dept-select">
           <option value="All">All Departments</option>
           <option value="Electronics">Electronics</option>
           <option value="Fitness">Fitness</option>
@@ -43,406 +45,408 @@
           <option value="Fashion">Fashion</option>
           <option value="Beauty">Beauty</option>
         </select>
-        <input type="text" class="search-input" placeholder="Search premium electronics, smart home, fitness gear..." id="search-input-field">
-        <button class="search-btn" id="search-submit-btn">
+                <input type="text" class="search-input" placeholder="Search premium electronics, smart home, fitness gear..." id="search-input-field">
+                <button class="search-btn" id="search-submit-btn">
           <svg viewBox="0 0 24 24">
             <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
           </svg>
         </button>
-      </div>
+            </div>
 
-      <!-- Right Header Actions -->
-      <div class="nav-right-options">
-        <!-- Interactive Sign-In Button Trigger -->
-        <div class="nav-opt" id="header-account-trigger-text" onclick="openAccountModal()">
-          <span class="nav-opt-line-1">Hello, Sign in</span>
-          <span class="nav-opt-line-2">Account & Lists</span>
-        </div>
+            <!-- Right Header Actions -->
+            <div class="nav-right-options">
+                <!-- Interactive Sign-In Button Trigger -->
+                <div class="nav-opt" id="header-account-trigger-text" onclick="openAccountModal()">
+                    <span class="nav-opt-line-1">Hello, Sign in</span>
+                    <span class="nav-opt-line-2">Account & Lists</span>
+                </div>
 
-        <div class="nav-opt" onclick="openTrackingModal()">
-          <span class="nav-opt-line-1">Returns</span>
-          <span class="nav-opt-line-2">& Orders</span>
-        </div>
+                <div class="nav-opt" onclick="openTrackingModal()">
+                    <span class="nav-opt-line-1">Returns</span>
+                    <span class="nav-opt-line-2">& Orders</span>
+                </div>
 
-        <!-- Interactive Cart Trigger Badge -->
-        <div class="nav-cart" id="nav-cart-trigger" onclick="toggleCartDrawer(true)">
-          <svg viewBox="0 0 24 24">
+                <!-- Interactive Cart Trigger Badge -->
+                <div class="nav-cart" id="nav-cart-trigger" onclick="toggleCartDrawer(true)">
+                    <svg viewBox="0 0 24 24">
             <circle cx="9" cy="21" r="1"></circle>
             <circle cx="20" cy="21" r="1"></circle>
             <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
           </svg>
-          <span class="cart-count" id="cart-count-badge">0</span>
-          <span class="nav-opt-line-2" style="margin-top: 10px;">Cart</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Sub-navigation Category Departments -->
-    <div class="nav-sub">
-      <div class="nav-sub-item active" data-category="All">All Departments</div>
-      <div class="nav-sub-item" data-category="Electronics">Electronics</div>
-      <div class="nav-sub-item" data-category="Fitness">Fitness</div>
-      <div class="nav-sub-item" data-category="Home & Kitchen">Home & Kitchen</div>
-      <div class="nav-sub-item" data-category="Fashion">Fashion</div>
-      <div class="nav-sub-item" data-category="Beauty">Beauty</div>
-      <div class="nav-sub-item" onclick="showDashboard('deals')">Today's Deals</div>
-      <div class="nav-sub-item" onclick="showDashboard('registry')">Registry</div>
-      <div class="nav-sub-item" onclick="showDashboard('giftcards')">Gift Cards</div>
-    </div>
-  </header>
-
-  <!-- Auto-sliding Premium Hero Banner Carousel -->
-  <section class="hero-slider">
-    <!-- Slide 1 -->
-    <div class="slide active" style="background-image: linear-gradient(rgba(0,0,0,0.1), rgba(234,237,237,1)), url('https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&w=1600&q=80');">
-      <div class="slide-content">
-        <h2>Unbelievable Sound. Absolute Silence.</h2>
-        <p>Grab the critically-acclaimed NovaSound wireless headphones during our Summer Premium Deals event.</p>
-        <a href="#products-feed" class="slide-btn">Shop Deal Now</a>
-      </div>
-    </div>
-    <!-- Slide 2 -->
-    <div class="slide" style="background-image: linear-gradient(rgba(0,0,0,0.1), rgba(234,237,237,1)), url('https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1600&q=80');">
-      <div class="slide-content">
-        <h2>Modern Living Redefined</h2>
-        <p>Elevate your everyday spaces with smart barista makers, lumbar ergonomic office units, and hands-free LiDAR robot sweepers.</p>
-        <a href="#products-feed" class="slide-btn">Explore Home Essentials</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- Main Feed Area -->
-  <main>
-    <!-- Featured Promotion Cards Tiles -->
-    <div class="category-promo-grid">
-      <div class="promo-card">
-        <h3>Smart Electronics</h3>
-        <div class="promo-image-container">
-          <div style="background: url('https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?auto=format&fit=crop&w=400&q=80');"></div>
-        </div>
-        <a href="#products-feed" class="promo-link" onclick="document.querySelector('[data-category=Electronics]').click()">See more premium audio & optics</a>
-      </div>
-
-      <div class="promo-card">
-        <h3>Fashion Collections</h3>
-        <div class="promo-image-container">
-          <div style="background: url('https://images.unsplash.com/photo-1525507119028-ed4c629a60a3?auto=format&fit=crop&w=400&q=80');"></div>
-        </div>
-        <a href="#products-feed" class="promo-link" onclick="document.querySelector('[data-category=Fashion]').click()">Browse jackets, footwear & outfits</a>
-      </div>
-
-      <div class="promo-card">
-        <h3>Aura Beauty Gear</h3>
-        <div class="promo-image-container">
-          <div style="background: url('https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=400&q=80');"></div>
-        </div>
-        <a href="#products-feed" class="promo-link" onclick="document.querySelector('[data-category=Beauty]').click()">Explore skin and cosmetics</a>
-      </div>
-    </div>
-
-    <!-- Active Products Feed Grid Title -->
-    <div class="products-section-title" id="products-feed-title-row">
-      <span id="results-count">Showing 1000 premium deals</span>
-      <span style="font-size: 14px; font-weight: normal; color: #555;">Sort by: <strong>Featured</strong></span>
-    </div>
-
-    <div class="products-feed-grid" id="products-feed">
-      <!-- Dynamic Products injected by app.js -->
-    </div>
-
-    <!-- ================= DYNAMIC DASHBOARD PANELS ================= -->
-
-    <!-- PANEL 1: TODAY'S DEALS -->
-    <div class="dashboard-view-panel" id="dashboard-deals">
-      <h2 style="margin-bottom: 10px; color: var(--amazon-dark); font-size: 26px;">Today's Lightning Deals</h2>
-      <p style="color: #666; margin-bottom: 20px;">Limited-time offers on premium items. Grab yours before they are fully claimed!</p>
-      
-      <div class="deals-timer-row">
-        <span>⚡ LIGHTNING OFFERS ACTIVE</span>
-        <span style="font-size: 18px;">Deals Expire In: <strong id="deals-time-string" style="color: #cc0c39;">04h : 30m : 00s</strong></span>
-      </div>
-
-      <div class="deals-grid" id="deals-items-grid">
-        <!-- Injected dynamically in app.js -->
-      </div>
-    </div>
-
-    <!-- PANEL 2: REGISTRY -->
-    <div class="dashboard-view-panel" id="dashboard-registry">
-      <h2 style="margin-bottom: 10px; color: var(--amazon-dark); font-size: 26px;">Premium Registry Finder</h2>
-      <p style="color: #666; margin-bottom: 25px;">Create a collection of products for your life's milestone celebrations or browse active registries.</p>
-      
-      <div class="giftcard-layout" style="grid-template-columns: 1.2fr 1fr;">
-        <!-- Find / Create Form -->
-        <div style="border: 1px solid #ddd; border-radius: 8px; padding: 25px; background-color: #fafafa;">
-          <h3 style="margin-bottom: 15px; color: var(--amazon-dark);">Create Your Registry</h3>
-          <form id="registry-form-tag" onsubmit="createNewRegistry(event)">
-            <div class="form-group">
-              <label for="registry-creator-name">Registrant Name</label>
-              <input type="text" id="registry-creator-name" class="form-control" placeholder="E.g., Sarah & John" required>
+                    <span class="cart-count" id="cart-count-badge">0</span>
+                    <span class="nav-opt-line-2" style="margin-top: 10px;">Cart</span>
+                </div>
             </div>
-            <div class="form-group">
-              <label for="registry-creator-type">Celebration Type</label>
-              <select id="registry-creator-type" class="form-control" style="background-color: white;">
+        </div>
+
+        <!-- Sub-navigation Category Departments -->
+        <div class="nav-sub">
+            <div class="nav-sub-item active" data-category="All">All Departments</div>
+            <div class="nav-sub-item" data-category="Electronics">Electronics</div>
+            <div class="nav-sub-item" data-category="Fitness">Fitness</div>
+            <div class="nav-sub-item" data-category="Home & Kitchen">Home & Kitchen</div>
+            <div class="nav-sub-item" data-category="Fashion">Fashion</div>
+            <div class="nav-sub-item" data-category="Beauty">Beauty</div>
+            <div class="nav-sub-item" onclick="showDashboard('deals')">Today's Deals</div>
+            <div class="nav-sub-item" onclick="showDashboard('registry')">Registry</div>
+            <div class="nav-sub-item" onclick="showDashboard('giftcards')">Gift Cards</div>
+        </div>
+    </header>
+
+    <!-- Auto-sliding Premium Hero Banner Carousel -->
+    <section class="hero-slider">
+        <!-- Slide 1 -->
+        <div class="slide active" style="background-image: linear-gradient(rgba(0,0,0,0.1), rgba(234,237,237,1)), url('https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&w=1600&q=80');">
+            <div class="slide-content">
+                <h2>Unbelievable Sound. Absolute Silence.</h2>
+                <p>Grab the critically-acclaimed NovaSound wireless headphones during our Summer Premium Deals event.</p>
+                <a href="#products-feed" class="slide-btn">Shop Deal Now</a>
+            </div>
+        </div>
+        <!-- Slide 2 -->
+        <div class="slide" style="background-image: linear-gradient(rgba(0,0,0,0.1), rgba(234,237,237,1)), url('https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1600&q=80');">
+            <div class="slide-content">
+                <h2>Modern Living Redefined</h2>
+                <p>Elevate your everyday spaces with smart barista makers, lumbar ergonomic office units, and hands-free LiDAR robot sweepers.</p>
+                <a href="#products-feed" class="slide-btn">Explore Home Essentials</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Feed Area -->
+    <main>
+        <!-- Featured Promotion Cards Tiles -->
+        <div class="category-promo-grid">
+            <div class="promo-card">
+                <h3>Smart Electronics</h3>
+                <div class="promo-image-container">
+                    <div style="background: url('https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?auto=format&fit=crop&w=400&q=80');"></div>
+                </div>
+                <a href="#products-feed" class="promo-link" onclick="document.querySelector('[data-category=Electronics]').click()">See more premium audio & optics</a>
+            </div>
+
+            <div class="promo-card">
+                <h3>Fashion Collections</h3>
+                <div class="promo-image-container">
+                    <div style="background: url('https://images.unsplash.com/photo-1558171813-4c088753af8f?auto=format&fit=crop&w=400&q=80');"></div>
+                </div>
+                <a href="#products-feed" class="promo-link" onclick="document.querySelector('[data-category=Fashion]').click()">Browse jackets, footwear & outfits</a>
+            </div>
+
+            <div class="promo-card">
+                <h3>Aura Beauty Gear</h3>
+                <div class="promo-image-container">
+                    <div style="background: url('https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=400&q=80');"></div>
+                </div>
+                <a href="#products-feed" class="promo-link" onclick="document.querySelector('[data-category=Beauty]').click()">Explore skin and cosmetics</a>
+            </div>
+        </div>
+
+        <!-- Active Products Feed Grid Title -->
+        <div class="products-section-title" id="products-feed-title-row">
+            <span id="results-count">Loading curated premium deals...</span>
+            <span style="font-size: 14px; font-weight: normal; color: #555;">Sort by: <strong>Featured</strong></span>
+        </div>
+
+        <div class="products-feed-grid" id="products-feed">
+            <!-- Dynamic Products injected by app.js -->
+        </div>
+
+        <!-- ================= DYNAMIC DASHBOARD PANELS ================= -->
+
+        <!-- PANEL 1: TODAY'S DEALS -->
+        <div class="dashboard-view-panel" id="dashboard-deals">
+            <h2 style="margin-bottom: 10px; color: var(--amazon-dark); font-size: 26px;">Today's Lightning Deals</h2>
+            <p style="color: #666; margin-bottom: 20px;">Limited-time offers on premium items. Grab yours before they are fully claimed!</p>
+
+            <div class="deals-timer-row">
+                <span>⚡ LIGHTNING OFFERS ACTIVE</span>
+                <span style="font-size: 18px;">Deals Expire In: <strong id="deals-time-string" style="color: #cc0c39;">04h : 30m : 00s</strong></span>
+            </div>
+
+            <div class="deals-grid" id="deals-items-grid">
+                <!-- Injected dynamically in app.js -->
+            </div>
+        </div>
+
+        <!-- PANEL 2: REGISTRY -->
+        <div class="dashboard-view-panel" id="dashboard-registry">
+            <h2 style="margin-bottom: 10px; color: var(--amazon-dark); font-size: 26px;">Premium Registry Finder</h2>
+            <p style="color: #666; margin-bottom: 25px;">Create a collection of products for your life's milestone celebrations or browse active registries.</p>
+
+            <div class="giftcard-layout" style="grid-template-columns: 1.2fr 1fr;">
+                <!-- Find / Create Form -->
+                <div style="border: 1px solid #ddd; border-radius: 8px; padding: 25px; background-color: #fafafa;">
+                    <h3 style="margin-bottom: 15px; color: var(--amazon-dark);">Create Your Registry</h3>
+                    <form id="registry-form-tag" onsubmit="createNewRegistry(event)">
+                        <div class="form-group">
+                            <label for="registry-creator-name">Registrant Name</label>
+                            <input type="text" id="registry-creator-name" class="form-control" placeholder="E.g., Sarah & John" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="registry-creator-type">Celebration Type</label>
+                            <select id="registry-creator-type" class="form-control" style="background-color: white;">
                 <option value="Wedding">Wedding Celebration</option>
                 <option value="Baby Shower">Baby Shower / Infant arrival</option>
                 <option value="Housewarming">New Housewarming List</option>
                 <option value="Birthday">Special Birthday Registry</option>
               </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="registry-creator-date">Event Date</label>
+                            <input type="date" id="registry-creator-date" class="form-control" required>
+                        </div>
+                        <button type="submit" class="btn-primary" style="width: 100%; padding: 12px; margin-top: 10px;">Register List Securely</button>
+                    </form>
+                </div>
+
+                <!-- Registry Feed -->
+                <div>
+                    <h3 style="margin-bottom: 15px; color: var(--amazon-dark);">Active Community Registries</h3>
+                    <div id="active-registries-feed">
+                        <!-- Injected dynamically in app.js -->
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-              <label for="registry-creator-date">Event Date</label>
-              <input type="date" id="registry-creator-date" class="form-control" required>
-            </div>
-            <button type="submit" class="btn-primary" style="width: 100%; padding: 12px; margin-top: 10px;">Register List Securely</button>
-          </form>
         </div>
 
-        <!-- Registry Feed -->
-        <div>
-          <h3 style="margin-bottom: 15px; color: var(--amazon-dark);">Active Community Registries</h3>
-          <div id="active-registries-feed">
-            <!-- Injected dynamically in app.js -->
-          </div>
+        <!-- PANEL 3: GIFT CARDS -->
+        <div class="dashboard-view-panel" id="dashboard-giftcards">
+            <h2 style="margin-bottom: 10px; color: var(--amazon-dark); font-size: 26px;">Amazon Premium Gift Cards Wallet</h2>
+            <p style="color: #666; margin-bottom: 35px;">Check balance, claim card codes, or purchase digital designs instantly.</p>
+
+            <div class="giftcard-layout">
+                <!-- Interactive Claim Box -->
+                <div>
+                    <div class="giftcard-promo-card">
+                        <h3>amazon premium</h3>
+                        <div>
+                            <span style="font-size: 13px; opacity: 0.8; display: block;">Premium Member Wallet Balance</span>
+                            <strong style="font-size: 32px;" id="giftcard-wallet-bal">₹0.00</strong>
+                        </div>
+                    </div>
+
+                    <div style="border: 1px solid #ddd; border-radius: 8px; padding: 25px; margin-top: 25px; background: #fafafa;">
+                        <h4 style="margin-bottom: 10px;">Claim a Gift Card Code</h4>
+                        <p style="font-size: 13px; color: #666; margin-bottom: 15px;">Try typing simulated codes like <strong>AMZ-GIFT-5000</strong> (claims ₹5000) or <strong>AMZ-GIFT-10000</strong> (claims ₹10000) to credit your wallet!</p>
+                        <div class="form-group">
+                            <input type="text" id="giftcard-code-input" class="form-control" placeholder="E.g., AMZ-GIFT-10000" style="text-transform: uppercase;">
+                        </div>
+                        <button class="btn-primary" style="width: 100%; padding: 12px;" onclick="claimGiftCardCode()">Redeem Balance</button>
+                    </div>
+                </div>
+
+                <!-- Design Catalog -->
+                <div>
+                    <h3 style="margin-bottom: 15px; color: var(--amazon-dark);">Select Gift Card Designs</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div style="border: 1px solid #ddd; border-radius: 8px; padding: 15px; cursor: pointer; text-align: center;" onclick="alert('Design Selected: Premium Gold Card')">
+                            <div style="height: 100px; background: linear-gradient(135deg, #bf953f, #fcf6ba, #b38728, #fbf5b7); border-radius: 6px; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; font-weight: 800; color: #5c4308;">GOLD</div>
+                            <span>Premium Gold</span>
+                        </div>
+                        <div style="border: 1px solid #ddd; border-radius: 8px; padding: 15px; cursor: pointer; text-align: center;" onclick="alert('Design Selected: Cobalt Blue Card')">
+                            <div style="height: 100px; background: linear-gradient(135deg, #1e3c72, #2a5298); border-radius: 6px; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; font-weight: 800; color: white;">COBALT</div>
+                            <span>Cobalt Blue</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
+
+        <!-- PANEL 4: WISHLIST -->
+        <div class="dashboard-view-panel" id="dashboard-wishlist">
+            <h2 style="margin-bottom: 10px; color: var(--amazon-dark); font-size: 26px;">Your Shopping Wishlist</h2>
+            <p style="color: #666; margin-bottom: 25px;">Your saved deals are kept safe here. Drag them directly into your shopping cart whenever you are ready.</p>
+
+            <div class="wishlist-panel-grid" id="wishlist-items-grid">
+                <!-- Injected dynamically in app.js -->
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Interactive Slide-out Shopping Cart Drawer -->
+    <div class="cart-drawer-overlay" id="cart-drawer-overlay" onclick="toggleCartDrawer(false)">
+        <div class="cart-drawer" onclick="event.stopPropagation()">
+            <div class="cart-header">
+                <h3>Shopping Cart</h3>
+                <button class="close-drawer-btn" onclick="toggleCartDrawer(false)">&times;</button>
+            </div>
+            <div class="cart-items-list" id="cart-items-list">
+                <!-- Injected dynamically -->
+            </div>
+            <div class="cart-footer">
+                <div class="cart-total-row">
+                    <span>Subtotal:</span>
+                    <span id="cart-subtotal">₹0.00</span>
+                </div>
+                <button class="cart-checkout-btn" onclick="openCheckout()">Proceed to Checkout</button>
+            </div>
+        </div>
     </div>
 
-    <!-- PANEL 3: GIFT CARDS -->
-    <div class="dashboard-view-panel" id="dashboard-giftcards">
-      <h2 style="margin-bottom: 10px; color: var(--amazon-dark); font-size: 26px;">Amazon Premium Gift Cards Wallet</h2>
-      <p style="color: #666; margin-bottom: 35px;">Check balance, claim card codes, or purchase digital designs instantly.</p>
-      
-      <div class="giftcard-layout">
-        <!-- Interactive Claim Box -->
-        <div>
-          <div class="giftcard-promo-card">
-            <h3>amazon premium</h3>
-            <div>
-              <span style="font-size: 13px; opacity: 0.8; display: block;">Premium Member Wallet Balance</span>
-              <strong style="font-size: 32px;" id="giftcard-wallet-bal">$0.00</strong>
+    <!-- Immersive Product Details Modal (Tabbed) -->
+    <div class="modal-overlay" id="quickview-modal-overlay" onclick="closeModal('quickview-modal-overlay')">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button class="close-modal-btn" onclick="closeModal('quickview-modal-overlay')">&times;</button>
+            <div id="quickview-modal-body">
+                <!-- Injected dynamically -->
             </div>
-          </div>
-          
-          <div style="border: 1px solid #ddd; border-radius: 8px; padding: 25px; margin-top: 25px; background: #fafafa;">
-            <h4 style="margin-bottom: 10px;">Claim a Gift Card Code</h4>
-            <p style="font-size: 13px; color: #666; margin-bottom: 15px;">Try typing simulated codes like <strong>AMZ-GIFT-50</strong> (claims $50) or <strong>AMZ-GIFT-100</strong> (claims $100) to credit your wallet!</p>
-            <div class="form-group">
-              <input type="text" id="giftcard-code-input" class="form-control" placeholder="E.g., AMZ-GIFT-100" style="text-transform: uppercase;">
+        </div>
+    </div>
+
+    <!-- Sign-In / Account Center Modal -->
+    <div class="modal-overlay" id="account-modal-overlay" onclick="closeModal('account-modal-overlay')">
+        <div class="modal-content" style="max-width: 500px;" onclick="event.stopPropagation()">
+            <button class="close-modal-btn" onclick="closeModal('account-modal-overlay')">&times;</button>
+            <div class="checkout-layout" style="padding: 30px;" id="account-modal-body-panel">
+                <!-- Injected dynamically in app.js -->
             </div>
-            <button class="btn-primary" style="width: 100%; padding: 12px;" onclick="claimGiftCardCode()">Redeem Balance</button>
-          </div>
         </div>
-
-        <!-- Design Catalog -->
-        <div>
-          <h3 style="margin-bottom: 15px; color: var(--amazon-dark);">Select Gift Card Designs</h3>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-            <div style="border: 1px solid #ddd; border-radius: 8px; padding: 15px; cursor: pointer; text-align: center;" onclick="alert('Design Selected: Premium Gold Card')">
-              <div style="height: 100px; background: linear-gradient(135deg, #bf953f, #fcf6ba, #b38728, #fbf5b7); border-radius: 6px; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; font-weight: 800; color: #5c4308;">GOLD</div>
-              <span>Premium Gold</span>
-            </div>
-            <div style="border: 1px solid #ddd; border-radius: 8px; padding: 15px; cursor: pointer; text-align: center;" onclick="alert('Design Selected: Cobalt Blue Card')">
-              <div style="height: 100px; background: linear-gradient(135deg, #1e3c72, #2a5298); border-radius: 6px; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; font-weight: 800; color: white;">COBALT</div>
-              <span>Cobalt Blue</span>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
 
-    <!-- PANEL 4: WISHLIST -->
-    <div class="dashboard-view-panel" id="dashboard-wishlist">
-      <h2 style="margin-bottom: 10px; color: var(--amazon-dark); font-size: 26px;">Your Shopping Wishlist</h2>
-      <p style="color: #666; margin-bottom: 25px;">Your saved deals are kept safe here. Drag them directly into your shopping cart whenever you are ready.</p>
-      
-      <div class="wishlist-panel-grid" id="wishlist-items-grid">
-        <!-- Injected dynamically in app.js -->
-      </div>
-    </div>
+    <!-- Address Selection Modal -->
+    <div class="modal-overlay" id="address-modal-overlay" onclick="closeModal('address-modal-overlay')">
+        <div class="modal-content" style="max-width: 500px;" onclick="event.stopPropagation()">
+            <button class="close-modal-btn" onclick="closeModal('address-modal-overlay')">&times;</button>
+            <div class="checkout-layout" style="padding: 30px;">
+                <h3 style="margin-bottom: 20px; color: var(--amazon-dark);">Choose Your Shipping Address</h3>
 
-  </main>
+                <div class="form-group">
+                    <label for="addr-name">Full Name</label>
+                    <input type="text" id="addr-name" class="form-control" placeholder="Recipient full name">
+                </div>
 
-  <!-- Interactive Slide-out Shopping Cart Drawer -->
-  <div class="cart-drawer-overlay" id="cart-drawer-overlay" onclick="toggleCartDrawer(false)">
-    <div class="cart-drawer" onclick="event.stopPropagation()">
-      <div class="cart-header">
-        <h3>Shopping Cart</h3>
-        <button class="close-drawer-btn" onclick="toggleCartDrawer(false)">&times;</button>
-      </div>
-      <div class="cart-items-list" id="cart-items-list">
-        <!-- Injected dynamically -->
-      </div>
-      <div class="cart-footer">
-        <div class="cart-total-row">
-          <span>Subtotal:</span>
-          <span id="cart-subtotal">$0.00</span>
-        </div>
-        <button class="cart-checkout-btn" onclick="openCheckout()">Proceed to Checkout</button>
-      </div>
-    </div>
-  </div>
+                <div class="form-group">
+                    <label for="addr-street">Street Address</label>
+                    <input type="text" id="addr-street" class="form-control" placeholder="Flat, House no., Building, Company, Street">
+                </div>
 
-  <!-- Immersive Product Details Modal (Tabbed) -->
-  <div class="modal-overlay" id="quickview-modal-overlay" onclick="closeModal('quickview-modal-overlay')">
-    <div class="modal-content" onclick="event.stopPropagation()">
-      <button class="close-modal-btn" onclick="closeModal('quickview-modal-overlay')">&times;</button>
-      <div id="quickview-modal-body">
-        <!-- Injected dynamically -->
-      </div>
-    </div>
-  </div>
+                <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label for="addr-city">City</label>
+                        <input type="text" id="addr-city" class="form-control" placeholder="City">
+                    </div>
+                    <div class="form-group">
+                        <label for="addr-zip">Pincode / ZIP</label>
+                        <input type="text" id="addr-zip" class="form-control" placeholder="6-digit ZIP">
+                    </div>
+                </div>
 
-  <!-- Sign-In / Account Center Modal -->
-  <div class="modal-overlay" id="account-modal-overlay" onclick="closeModal('account-modal-overlay')">
-    <div class="modal-content" style="max-width: 500px;" onclick="event.stopPropagation()">
-      <button class="close-modal-btn" onclick="closeModal('account-modal-overlay')">&times;</button>
-      <div class="checkout-layout" style="padding: 30px;" id="account-modal-body-panel">
-        <!-- Injected dynamically in app.js -->
-      </div>
-    </div>
-  </div>
-
-  <!-- Address Selection Modal -->
-  <div class="modal-overlay" id="address-modal-overlay" onclick="closeModal('address-modal-overlay')">
-    <div class="modal-content" style="max-width: 500px;" onclick="event.stopPropagation()">
-      <button class="close-modal-btn" onclick="closeModal('address-modal-overlay')">&times;</button>
-      <div class="checkout-layout" style="padding: 30px;">
-        <h3 style="margin-bottom: 20px; color: var(--amazon-dark);">Choose Your Shipping Address</h3>
-        
-        <div class="form-group">
-          <label for="addr-name">Full Name</label>
-          <input type="text" id="addr-name" class="form-control" placeholder="Recipient full name">
-        </div>
-        
-        <div class="form-group">
-          <label for="addr-street">Street Address</label>
-          <input type="text" id="addr-street" class="form-control" placeholder="Flat, House no., Building, Company, Street">
-        </div>
-        
-        <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 15px;">
-          <div class="form-group">
-            <label for="addr-city">City</label>
-            <input type="text" id="addr-city" class="form-control" placeholder="City">
-          </div>
-          <div class="form-group">
-            <label for="addr-zip">Pincode / ZIP</label>
-            <input type="text" id="addr-zip" class="form-control" placeholder="6-digit ZIP">
-          </div>
-        </div>
-        
-        <div class="form-group">
-          <label for="addr-country">Country/Region</label>
-          <select id="addr-country" class="form-control" style="background-color: white;">
+                <div class="form-group">
+                    <label for="addr-country">Country/Region</label>
+                    <select id="addr-country" class="form-control" style="background-color: white;">
             <option value="India">India</option>
             <option value="United States">United States</option>
             <option value="United Kingdom">United Kingdom</option>
             <option value="Canada">Canada</option>
             <option value="Australia">Australia</option>
           </select>
-        </div>
-        
-        <button class="btn-primary" style="width: 100%; padding: 12px; margin-top: 15px;" onclick="saveAddress()">Apply & Update Address</button>
-      </div>
-    </div>
-  </div>
+                </div>
 
-  <!-- Shipment Tracking Modal -->
-  <div class="modal-overlay" id="tracking-modal-overlay" onclick="closeModal('tracking-modal-overlay')">
-    <div class="modal-content" style="max-width: 650px;" onclick="event.stopPropagation()">
-      <button class="close-modal-btn" onclick="closeModal('tracking-modal-overlay')">&times;</button>
-      <div class="checkout-layout" style="padding: 30px;">
-        <h3 style="margin-bottom: 25px; color: var(--amazon-dark); font-size: 22px;">Simulated Shipment Tracking</h3>
-        
-        <div id="tracking-orders-list">
-          <!-- Injected dynamically in app.js -->
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Interactive Multi-Step Checkout Modal -->
-  <div class="modal-overlay" id="checkout-modal-overlay" onclick="closeModal('checkout-modal-overlay')">
-    <div class="modal-content" style="max-width: 600px;" onclick="event.stopPropagation()">
-      <button class="close-modal-btn" onclick="closeModal('checkout-modal-overlay')">&times;</button>
-      <div class="checkout-layout">
-        <!-- Step indicators bar -->
-        <div class="checkout-steps-nav">
-          <div class="step-indicator active"><span>1</span>Shipping</div>
-          <div class="step-indicator"><span>2</span>Payment</div>
-          <div class="step-indicator"><span>3</span>Completed</div>
-        </div>
-
-        <!-- Step 1: Shipping Address -->
-        <div class="checkout-pane active" id="checkout-step-1">
-          <h3>Shipping Destination</h3>
-          <div class="form-group">
-            <label for="shipping-name">Full Name</label>
-            <input type="text" id="shipping-name" class="form-control" placeholder="Enter recipient's full name" value="John Doe">
-          </div>
-          <div class="form-group">
-            <label for="shipping-address">Delivery Address</label>
-            <input type="text" id="shipping-address" class="form-control" placeholder="Street Address, City, Pincode" value="742 Evergreen Terrace, New Delhi, 110001">
-          </div>
-          <div class="form-group">
-            <label for="shipping-phone">Phone Number</label>
-            <input type="text" id="shipping-phone" class="form-control" placeholder="Mobile contact number" value="+91 98765 43210">
-          </div>
-        </div>
-
-        <!-- Step 2: Payment Gateway -->
-        <div class="checkout-pane" id="checkout-step-2">
-          <h3>Payment Information</h3>
-          <div class="form-group">
-            <label for="card-name">Name on Card</label>
-            <input type="text" id="card-name" class="form-control" placeholder="Name exact to card" value="John Doe">
-          </div>
-          <div class="form-group">
-            <label for="card-number">Card Number</label>
-            <input type="text" id="card-number" class="form-control" placeholder="1111-2222-3333-4444" value="4111222233334444">
-          </div>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-            <div class="form-group">
-              <label for="card-expiry">Expiry Date</label>
-              <input type="text" id="card-expiry" class="form-control" placeholder="MM/YY" value="12/28">
+                <button class="btn-primary" style="width: 100%; padding: 12px; margin-top: 15px;" onclick="saveAddress()">Apply & Update Address</button>
             </div>
-            <div class="form-group">
-              <label for="card-cvv">CVV</label>
-              <input type="password" id="card-cvv" class="form-control" placeholder="123" value="999">
+        </div>
+    </div>
+
+    <!-- Shipment Tracking Modal -->
+    <div class="modal-overlay" id="tracking-modal-overlay" onclick="closeModal('tracking-modal-overlay')">
+        <div class="modal-content" style="max-width: 650px;" onclick="event.stopPropagation()">
+            <button class="close-modal-btn" onclick="closeModal('tracking-modal-overlay')">&times;</button>
+            <div class="checkout-layout" style="padding: 30px;">
+                <h3 style="margin-bottom: 25px; color: var(--amazon-dark); font-size: 22px;">Simulated Shipment Tracking</h3>
+
+                <div id="tracking-orders-list">
+                    <!-- Injected dynamically in app.js -->
+                </div>
             </div>
-          </div>
         </div>
-
-        <!-- Step 3: Success Screen -->
-        <div class="checkout-pane" id="checkout-step-3">
-          <div class="order-success-screen">
-            <div class="success-icon-wrap">✔</div>
-            <h2>Order Placed Successfully!</h2>
-            <p>Your premium transaction was approved. A confirmation receipt has been sent to your registered email account.</p>
-            <p style="font-size: 14px; color: #777;">Estimated Simulated Delivery: <strong>1-2 business days</strong></p>
-          </div>
-        </div>
-
-        <!-- Checkout Buttons -->
-        <div class="checkout-nav-buttons">
-          <button class="btn-secondary" style="padding: 10px 20px; font-weight: 700;" id="checkout-prev-btn" onclick="checkoutPrev()">Back</button>
-          <button class="btn-primary" style="padding: 10px 25px;" id="checkout-next-btn" onclick="checkoutNext()">Continue to Payment</button>
-        </div>
-      </div>
     </div>
-  </div>
 
-  <!-- Premium Dark Footer -->
-  <footer>
-    <div class="footer-links">
-      <a href="#" onclick="alert('Welcome to Amazon Premium - a simulated project!')">About Us</a>
-      <a href="#" onclick="alert('Support system online: How can we assist you today?')">Contact Support</a>
-      <a href="#" onclick="alert('Simulation Terms of Service Active')">Terms of Service</a>
-      <a href="#" onclick="alert('Privacy Policy Verified')">Privacy Guidelines</a>
+    <!-- Interactive Multi-Step Checkout Modal -->
+    <div class="modal-overlay" id="checkout-modal-overlay" onclick="closeModal('checkout-modal-overlay')">
+        <div class="modal-content" style="max-width: 600px;" onclick="event.stopPropagation()">
+            <button class="close-modal-btn" onclick="closeModal('checkout-modal-overlay')">&times;</button>
+            <div class="checkout-layout">
+                <!-- Step indicators bar -->
+                <div class="checkout-steps-nav">
+                    <div class="step-indicator active"><span>1</span>Shipping</div>
+                    <div class="step-indicator"><span>2</span>Payment</div>
+                    <div class="step-indicator"><span>3</span>Completed</div>
+                </div>
+
+                <!-- Step 1: Shipping Address -->
+                <div class="checkout-pane active" id="checkout-step-1">
+                    <h3>Shipping Destination</h3>
+                    <div class="form-group">
+                        <label for="shipping-name">Full Name</label>
+                        <input type="text" id="shipping-name" class="form-control" placeholder="Enter recipient's full name" value="John Doe">
+                    </div>
+                    <div class="form-group">
+                        <label for="shipping-address">Delivery Address</label>
+                        <input type="text" id="shipping-address" class="form-control" placeholder="Street Address, City, Pincode" value="742 Evergreen Terrace, New Delhi, 110001">
+                    </div>
+                    <div class="form-group">
+                        <label for="shipping-phone">Phone Number</label>
+                        <input type="text" id="shipping-phone" class="form-control" placeholder="Mobile contact number" value="+91 98765 43210">
+                    </div>
+                </div>
+
+                <!-- Step 2: Payment Gateway -->
+                <div class="checkout-pane" id="checkout-step-2">
+                    <h3>Payment Information</h3>
+                    <div class="form-group">
+                        <label for="card-name">Name on Card</label>
+                        <input type="text" id="card-name" class="form-control" placeholder="Name exact to card" value="John Doe">
+                    </div>
+                    <div class="form-group">
+                        <label for="card-number">Card Number</label>
+                        <input type="text" id="card-number" class="form-control" placeholder="1111-2222-3333-4444" value="4111222233334444">
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div class="form-group">
+                            <label for="card-expiry">Expiry Date</label>
+                            <input type="text" id="card-expiry" class="form-control" placeholder="MM/YY" value="12/28">
+                        </div>
+                        <div class="form-group">
+                            <label for="card-cvv">CVV</label>
+                            <input type="password" id="card-cvv" class="form-control" placeholder="123" value="999">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3: Success Screen -->
+                <div class="checkout-pane" id="checkout-step-3">
+                    <div class="order-success-screen">
+                        <div class="success-icon-wrap">✔</div>
+                        <h2>Order Placed Successfully!</h2>
+                        <p>Your premium transaction was approved. A confirmation receipt has been sent to your registered email account.</p>
+                        <p style="font-size: 14px; color: #777;">Estimated Simulated Delivery: <strong>1-2 business days</strong></p>
+                    </div>
+                </div>
+
+                <!-- Checkout Buttons -->
+                <div class="checkout-nav-buttons">
+                    <button class="btn-secondary" style="padding: 10px 20px; font-weight: 700;" id="checkout-prev-btn" onclick="checkoutPrev()">Back</button>
+                    <button class="btn-primary" style="padding: 10px 25px;" id="checkout-next-btn" onclick="checkoutNext()">Continue to Payment</button>
+                </div>
+            </div>
+        </div>
     </div>
-    <p class="footer-copyright">© 2026 Amazon Premium Clone - Created for Pair Programming demonstration using Vanilla HTML, CSS, and JS.</p>
-  </footer>
 
-  <script src="app.js"></script>
+    <!-- Premium Dark Footer -->
+    <footer>
+        <div class="footer-links">
+            <a href="#" onclick="alert('Welcome to Amazon Premium - a simulated project!')">About Us</a>
+            <a href="#" onclick="alert('Support system online: How can we assist you today?')">Contact Support</a>
+            <a href="#" onclick="alert('Simulation Terms of Service Active')">Terms of Service</a>
+            <a href="#" onclick="alert('Privacy Policy Verified')">Privacy Guidelines</a>
+        </div>
+        <p class="footer-copyright">© 2026 Amazon Premium Clone - Created for Pair Programming demonstration using Vanilla HTML, CSS, and JS.</p>
+    </footer>
+
+    <script src="image.js"></script>
+    <script src="app.js?v=10"></script>
 </body>
+
 </html>

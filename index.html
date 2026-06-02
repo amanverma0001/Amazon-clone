@@ -118,7 +118,7 @@
       <div class="promo-card">
         <h3>Smart Electronics</h3>
         <div class="promo-image-container">
-          <div style="background: url('https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?auto=format&fit=crop&w=400&q=80');"></div>
+          <div style="background: url('https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?auto=format&fit=crop&w=400&q=80');"></div>
         </div>
         <a href="#products-feed" class="promo-link" onclick="document.querySelector('[data-category=Electronics]').click()">See more premium audio & optics</a>
       </div>
@@ -126,7 +126,7 @@
       <div class="promo-card">
         <h3>Fashion Collections</h3>
         <div class="promo-image-container">
-          <div style="background: url('https://images.unsplash.com/photo-1525507119028-ed4c629a60a3?auto=format&fit=crop&w=400&q=80');"></div>
+          <div style="background: url('https://images.unsplash.com/photo-1558171813-4c088753af8f?auto=format&fit=crop&w=400&q=80');"></div>
         </div>
         <a href="#products-feed" class="promo-link" onclick="document.querySelector('[data-category=Fashion]').click()">Browse jackets, footwear & outfits</a>
       </div>
@@ -134,7 +134,7 @@
       <div class="promo-card">
         <h3>Aura Beauty Gear</h3>
         <div class="promo-image-container">
-          <div style="background: url('https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=400&q=80');"></div>
+          <div style="background: url('https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=400&q=80');"></div>
         </div>
         <a href="#products-feed" class="promo-link" onclick="document.querySelector('[data-category=Beauty]').click()">Explore skin and cosmetics</a>
       </div>
@@ -142,7 +142,7 @@
 
     <!-- Active Products Feed Grid Title -->
     <div class="products-section-title" id="products-feed-title-row">
-      <span id="results-count">Showing 1000 premium deals</span>
+      <span id="results-count">Loading curated premium deals...</span>
       <span style="font-size: 14px; font-weight: normal; color: #555;">Sort by: <strong>Featured</strong></span>
     </div>
 
@@ -220,15 +220,15 @@
             <h3>amazon premium</h3>
             <div>
               <span style="font-size: 13px; opacity: 0.8; display: block;">Premium Member Wallet Balance</span>
-              <strong style="font-size: 32px;" id="giftcard-wallet-bal">$0.00</strong>
+              <strong style="font-size: 32px;" id="giftcard-wallet-bal">₹0.00</strong>
             </div>
           </div>
           
           <div style="border: 1px solid #ddd; border-radius: 8px; padding: 25px; margin-top: 25px; background: #fafafa;">
             <h4 style="margin-bottom: 10px;">Claim a Gift Card Code</h4>
-            <p style="font-size: 13px; color: #666; margin-bottom: 15px;">Try typing simulated codes like <strong>AMZ-GIFT-50</strong> (claims $50) or <strong>AMZ-GIFT-100</strong> (claims $100) to credit your wallet!</p>
+            <p style="font-size: 13px; color: #666; margin-bottom: 15px;">Try typing simulated codes like <strong>AMZ-GIFT-5000</strong> (claims ₹5000) or <strong>AMZ-GIFT-10000</strong> (claims ₹10000) to credit your wallet!</p>
             <div class="form-group">
-              <input type="text" id="giftcard-code-input" class="form-control" placeholder="E.g., AMZ-GIFT-100" style="text-transform: uppercase;">
+              <input type="text" id="giftcard-code-input" class="form-control" placeholder="E.g., AMZ-GIFT-10000" style="text-transform: uppercase;">
             </div>
             <button class="btn-primary" style="width: 100%; padding: 12px;" onclick="claimGiftCardCode()">Redeem Balance</button>
           </div>
@@ -276,7 +276,7 @@
       <div class="cart-footer">
         <div class="cart-total-row">
           <span>Subtotal:</span>
-          <span id="cart-subtotal">$0.00</span>
+          <span id="cart-subtotal">₹0.00</span>
         </div>
         <button class="cart-checkout-btn" onclick="openCheckout()">Proceed to Checkout</button>
       </div>
@@ -443,6 +443,6 @@
     <p class="footer-copyright">© 2026 Amazon Premium Clone - Created for Pair Programming demonstration using Vanilla HTML, CSS, and JS.</p>
   </footer>
 
-  <script src="app.js"></script>
+  <script src="app.js?v=10"></script>
 </body>
 </html>

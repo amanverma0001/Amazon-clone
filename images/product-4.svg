@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="800" viewBox="0 0 800 800">
+  <rect width="100%" height="100%" fill="#e8f7ea" />
+  <text x="50%" y="45%" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="28" fill="#065f46" font-weight="700">Sample Image</text>
+  <text x="50%" y="55%" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="20" fill="#064e3b">Product 4</text>
+</svg>

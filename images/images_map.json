@@ -1,0 +1,29 @@
+{
+  "Electronics": [
+    "images/real/electronics_headphones.png",
+    "images/real/electronics_laptop.png",
+    "images/real/electronics_phone.png",
+    "images/real/electronics_router.png",
+    "images/real/electronics_smartdisplay.png"
+  ],
+  "Fitness": [
+    "images/real/fitness_dumbbells.png",
+    "images/real/fitness_watch.png",
+    "images/real/fitness_yoga.png"
+  ],
+  "Home & Kitchen": [
+    "images/real/home_chair.png",
+    "images/real/home_espresso.png",
+    "images/real/home_vacuum.png"
+  ],
+  "Fashion": [
+    "images/real/fashion_backpack.png",
+    "images/real/fashion_jacket.png",
+    "images/real/fashion_sneakers.png"
+  ],
+  "Beauty": [
+    "images/real/beauty_dryer.png",
+    "images/real/beauty_lipstick.png",
+    "images/real/beauty_serum.png"
+  ]
+}

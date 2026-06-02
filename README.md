@@ -105,4 +105,4 @@ sequenceDiagram
 
 ## 👥 Contributors
 
-* **Amandeep** ([amanverma0001](https://github.com/amanverma0001)) - Lead Developer
+* **Aman Verma** ([amanverma0001](https://github.com/amanverma0001)) - Lead Developer

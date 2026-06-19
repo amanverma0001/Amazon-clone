@@ -1385,6 +1385,12 @@ document.addEventListener("DOMContentLoaded", () => {
     startDealsTimer();
 });
 
+// Glassmorphic Theme Switcher
+window.toggleTheme = function() {
+    const isDark = document.documentElement.classList.toggle("dark-theme");
+    localStorage.setItem("amazon-theme", isDark ? "dark" : "light");
+};
+
 // Render Star Ratings HTML Helper
 function getRatingStarsHTML(rating) {
     let starsHTML = "";
@@ -1414,6 +1420,30 @@ function getFilteredProducts() {
     });
 }
 
+let renderTimeoutId = null;
+
+function getSkeletonGridHTML() {
+    let html = "";
+    for (let i = 0; i < 8; i++) {
+        html += `
+      <div class="skeleton-card">
+        <div class="skeleton-shimmer"></div>
+        <div class="skeleton-image"></div>
+        <div class="skeleton-text category"></div>
+        <div class="skeleton-text"></div>
+        <div class="skeleton-text short"></div>
+        <div class="skeleton-text rating"></div>
+        <div class="skeleton-text price"></div>
+        <div class="skeleton-actions">
+          <div class="skeleton-btn-1"></div>
+          <div class="skeleton-btn-2"></div>
+        </div>
+      </div>
+    `;
+    }
+    return html;
+}
+
 // Render Products Grid based on Category & Search Filter
 function renderProducts(isScroll = false) {
     const gridContainer = document.getElementById("products-feed");
@@ -1421,39 +1451,52 @@ function renderProducts(isScroll = false) {
 
     const filteredProducts = getFilteredProducts();
 
-    if (!isScroll) {
-        visibleCount = 40;
-    }
-
-    // Set matching product count
-    const countLabel = document.getElementById("results-count");
-    if (countLabel) {
-        countLabel.textContent = `Showing ${filteredProducts.length} premium deals`;
-    }
-
-    if (filteredProducts.length === 0) {
-        gridContainer.innerHTML = `
-      <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #666;">
-        <h3>No matching items found. Try searching for "Sony", "Dyson", "Nike", "CeraVe" or reset the filters.</h3>
-      </div>
-    `;
+    if (isScroll) {
+        const visibleProducts = filteredProducts.slice(0, visibleCount);
+        renderProductCards(visibleProducts, gridContainer);
         return;
     }
 
-    // Render maximum of visibleCount products on active load for scroll performance, supports search
-    const visibleProducts = filteredProducts.slice(0, visibleCount);
+    // Reset counts and show skeleton loader
+    visibleCount = 40;
+    const countLabel = document.getElementById("results-count");
+    if (countLabel) {
+        countLabel.textContent = "Loading premium deals...";
+    }
+    gridContainer.innerHTML = getSkeletonGridHTML();
 
-    gridContainer.innerHTML = visibleProducts.map(prod => {
+    if (renderTimeoutId) {
+        clearTimeout(renderTimeoutId);
+    }
+
+    renderTimeoutId = setTimeout(() => {
+        if (countLabel) {
+            countLabel.textContent = `Showing ${filteredProducts.length} premium deals`;
+        }
+        if (filteredProducts.length === 0) {
+            gridContainer.innerHTML = `
+          <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #666;" class="fade-in-element">
+            <h3>No matching items found. Try searching for "Sony", "Dyson", "Nike", "CeraVe" or reset the filters.</h3>
+          </div>
+        `;
+            return;
+        }
+        const visibleProducts = filteredProducts.slice(0, visibleCount);
+        renderProductCards(visibleProducts, gridContainer, true);
+    }, 550);
+}
+
+function renderProductCards(visibleProducts, gridContainer, withFade = false) {
+    const cardsHTML = visibleProducts.map(prod => {
         const originalPriceHTML = prod.originalPrice ? `<span class="original-price">₹${prod.originalPrice.toFixed(2)}</span>` : "";
         const badgeHTML = prod.tag ? `<span class="badge-tag">${prod.tag}</span>` : "";
         const priceWhole = Math.floor(prod.price);
         const priceFraction = (prod.price % 1).toFixed(2).split(".")[1] || "00";
-
-        // Heart active status check
         const wishActive = wishlist.includes(prod.id) ? "active" : "";
+        const fadeClass = withFade ? "fade-in-element" : "";
 
         return `
-      <div class="product-card" data-id="${prod.id}">
+      <div class="product-card ${fadeClass}" data-id="${prod.id}">
         ${badgeHTML}
         
         <!-- Interactive Wishlist Heart Button -->
@@ -1487,6 +1530,8 @@ function renderProducts(isScroll = false) {
       </div>
     `;
     }).join("");
+
+    gridContainer.innerHTML = cardsHTML;
 }
 
 // Hero Auto-Sliding Promo Carousel
@@ -2458,3 +2503,8 @@ function attachImageLoadHandlers() {
     });
     observer.observe(document.documentElement, { childList: true, subtree: true });
 })();
+
+// Expose state getters for external components (like the quick-access widget)
+window.getCartState = () => cart;
+window.getWishlistState = () => wishlist;
+window.getTrackingOrdersState = () => trackingOrders;

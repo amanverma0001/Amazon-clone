@@ -42,21 +42,24 @@
       </div>
 
       <!-- Live Search / Category Filters Bar -->
-      <div class="nav-search">
-        <select class="search-select" id="search-dept-select">
-          <option value="All">All Departments</option>
-          <option value="Electronics">Electronics</option>
-          <option value="Fitness">Fitness</option>
-          <option value="Home & Kitchen">Home & Kitchen</option>
-          <option value="Fashion">Fashion</option>
-          <option value="Beauty">Beauty</option>
-        </select>
-        <input type="text" class="search-input" placeholder="Search premium electronics, smart home, fitness gear..." id="search-input-field">
-        <button class="search-btn" id="search-submit-btn">
-          <svg viewBox="0 0 24 24">
-            <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
-          </svg>
-        </button>
+      <div class="nav-search-container">
+        <div class="nav-search">
+          <select class="search-select" id="search-dept-select">
+            <option value="All">All Departments</option>
+            <option value="Electronics">Electronics</option>
+            <option value="Fitness">Fitness</option>
+            <option value="Home & Kitchen">Home & Kitchen</option>
+            <option value="Fashion">Fashion</option>
+            <option value="Beauty">Beauty</option>
+          </select>
+          <input type="text" class="search-input" placeholder="Search premium electronics, smart home, fitness gear..." id="search-input-field" autocomplete="off">
+          <button class="search-btn" id="search-submit-btn">
+            <svg viewBox="0 0 24 24">
+              <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+            </svg>
+          </button>
+        </div>
+        <div class="search-autocomplete-panel" id="search-autocomplete-dropdown"></div>
       </div>
 
       <!-- Right Header Actions -->
@@ -296,15 +299,41 @@
         <h3>Shopping Cart</h3>
         <button class="close-drawer-btn" onclick="toggleCartDrawer(false)">&times;</button>
       </div>
+      <div class="cart-delivery-progress" id="cart-delivery-progress-section">
+        <div class="progress-text" id="cart-delivery-progress-text">Add ₹1,500.00 more to qualify for FREE delivery!</div>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="cart-delivery-progress-bar"></div>
+        </div>
+      </div>
       <div class="cart-items-list" id="cart-items-list">
         <!-- Injected dynamically -->
       </div>
-      <div class="cart-footer">
-        <div class="cart-total-row">
+      <div class="cart-promo-box">
+        <input type="text" class="promo-input" id="cart-promo-input" placeholder="Promo Code (WELCOME10 / PRIME20)">
+        <button class="promo-btn" onclick="applyCartPromoCode()">Apply</button>
+      </div>
+      <div class="cart-footer" style="padding-top: 10px;">
+        <div class="invoice-row">
           <span>Subtotal:</span>
+          <span id="invoice-subtotal">₹0.00</span>
+        </div>
+        <div class="invoice-row">
+          <span>Delivery Fee:</span>
+          <span id="invoice-delivery">₹99.00</span>
+        </div>
+        <div class="invoice-row" id="invoice-discount-row" style="display: none; color: #2e7d32;">
+          <span>Promo Discount:</span>
+          <span id="invoice-discount">-₹0.00</span>
+        </div>
+        <div class="invoice-row">
+          <span>Simulated GST (18%):</span>
+          <span id="invoice-tax">₹0.00</span>
+        </div>
+        <div class="invoice-row total-amount">
+          <span>Order Total:</span>
           <span id="cart-subtotal">₹0.00</span>
         </div>
-        <button class="cart-checkout-btn" onclick="openCheckout()">Proceed to Checkout</button>
+        <button class="cart-checkout-btn" onclick="openCheckout()" style="margin-top: 10px;">Proceed to Checkout</button>
       </div>
     </div>
   </div>
@@ -402,39 +431,169 @@
         <!-- Step 1: Shipping Address -->
         <div class="checkout-pane active" id="checkout-step-1">
           <h3>Shipping Destination</h3>
-          <div class="form-group">
-            <label for="shipping-name">Full Name</label>
-            <input type="text" id="shipping-name" class="form-control" placeholder="Enter recipient's full name" value="John Doe">
+          <p style="font-size: 13px; color: #666; margin-bottom: 12px;">Select a saved address or enter a new one:</p>
+          <div class="address-cards-grid">
+            <div class="address-select-card active" id="addr-card-home" onclick="selectCheckoutAddress('home')">
+              <input type="radio" name="checkout-addr-radio" id="addr-radio-home" checked>
+              <div class="address-card-title">Home (Default)</div>
+              <div class="address-card-body">
+                <strong>John Doe</strong><br>
+                742 Evergreen Terrace<br>
+                New Delhi, 110001<br>
+                Phone: +91 98765 43210
+              </div>
+            </div>
+            <div class="address-select-card" id="addr-card-work" onclick="selectCheckoutAddress('work')">
+              <input type="radio" name="checkout-addr-radio" id="addr-radio-work">
+              <div class="address-card-title">Office / Work</div>
+              <div class="address-card-body">
+                <strong>John Doe (TechCorp)</strong><br>
+                Building 4B, Cyber City<br>
+                Gurugram, 122002<br>
+                Phone: +91 98765 99999
+              </div>
+            </div>
           </div>
-          <div class="form-group">
-            <label for="shipping-address">Delivery Address</label>
-            <input type="text" id="shipping-address" class="form-control" placeholder="Street Address, City, Pincode" value="742 Evergreen Terrace, New Delhi, 110001">
-          </div>
-          <div class="form-group">
-            <label for="shipping-phone">Phone Number</label>
-            <input type="text" id="shipping-phone" class="form-control" placeholder="Mobile contact number" value="+91 98765 43210">
+          
+          <div style="border-top: 1px solid var(--border-color); padding-top: 15px; margin-top: 15px;">
+            <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; cursor: pointer; margin-bottom: 10px;">
+              <input type="checkbox" id="checkout-custom-addr-toggle" onclick="toggleCustomAddressForm()">
+              Ship to a different address
+            </label>
+            
+            <div id="checkout-custom-address-form" style="display: none; transition: all 0.3s ease;">
+              <div class="form-group">
+                <label for="shipping-name">Full Name</label>
+                <input type="text" id="shipping-name" class="form-control" placeholder="Enter recipient's full name" value="John Doe">
+              </div>
+              <div class="form-group">
+                <label for="shipping-address">Delivery Address</label>
+                <input type="text" id="shipping-address" class="form-control" placeholder="Street Address, City, Pincode" value="742 Evergreen Terrace, New Delhi, 110001">
+              </div>
+              <div class="form-group">
+                <label for="shipping-phone">Phone Number</label>
+                <input type="text" id="shipping-phone" class="form-control" placeholder="Mobile contact number" value="+91 98765 43210">
+              </div>
+            </div>
           </div>
         </div>
 
         <!-- Step 2: Payment Gateway -->
         <div class="checkout-pane" id="checkout-step-2">
-          <h3>Payment Information</h3>
-          <div class="form-group">
-            <label for="card-name">Name on Card</label>
-            <input type="text" id="card-name" class="form-control" placeholder="Name exact to card" value="John Doe">
+          <h3>Payment Method</h3>
+          <div class="checkout-payment-methods">
+            <button class="pay-tab-btn active" id="pay-btn-card" onclick="switchPaymentMethod('card')">💳 Credit Card</button>
+            <button class="pay-tab-btn" id="pay-btn-upi" onclick="switchPaymentMethod('upi')">📱 UPI / QR Scan</button>
+            <button class="pay-tab-btn" id="pay-btn-wallet" onclick="switchPaymentMethod('wallet')">🪙 Premium Wallet</button>
           </div>
-          <div class="form-group">
-            <label for="card-number">Card Number</label>
-            <input type="text" id="card-number" class="form-control" placeholder="1111-2222-3333-4444" value="4111222233334444">
-          </div>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+
+          <!-- PANE: CARD -->
+          <div class="payment-pane active" id="pay-pane-card">
+            <!-- 3D Card Visualizer -->
+            <div class="credit-card-3d-wrapper">
+              <div class="credit-card-3d" id="visual-credit-card">
+                <!-- Front -->
+                <div class="card-face front">
+                  <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div class="card-chip"></div>
+                    <div class="card-logo" id="visual-card-logo">VISA</div>
+                  </div>
+                  <div class="card-number-display" id="visual-card-number">•••• •••• •••• ••••</div>
+                  <div class="card-info-row">
+                    <div>
+                      <span style="font-size: 8px; opacity: 0.6; display: block;">Card Holder</span>
+                      <strong id="visual-card-holder">JOHN DOE</strong>
+                    </div>
+                    <div style="text-align: right;">
+                      <span style="font-size: 8px; opacity: 0.6; display: block;">Expires</span>
+                      <strong id="visual-card-expiry">12/28</strong>
+                    </div>
+                  </div>
+                </div>
+                <!-- Back -->
+                <div class="card-face back">
+                  <div class="card-magnetic-strip"></div>
+                  <div class="card-signature-area">
+                    <span id="visual-card-cvv">•••</span>
+                  </div>
+                  <div style="padding: 10px 15px; font-size: 8px; opacity: 0.5; text-align: center;">
+                    This is a simulated transaction. No actual charges will be processed.
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div class="form-group">
-              <label for="card-expiry">Expiry Date</label>
-              <input type="text" id="card-expiry" class="form-control" placeholder="MM/YY" value="12/28">
+              <label for="card-name">Name on Card</label>
+              <input type="text" id="card-name" class="form-control" placeholder="Name exact to card" value="John Doe" oninput="updateVisualCard()">
             </div>
             <div class="form-group">
-              <label for="card-cvv">CVV</label>
-              <input type="password" id="card-cvv" class="form-control" placeholder="123" value="999">
+              <label for="card-number">Card Number</label>
+              <input type="text" id="card-number" class="form-control" placeholder="1111-2222-3333-4444" value="4111222233334444" maxlength="19" oninput="updateVisualCard()">
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+              <div class="form-group">
+                <label for="card-expiry">Expiry Date</label>
+                <input type="text" id="card-expiry" class="form-control" placeholder="MM/YY" value="12/28" maxlength="5" oninput="updateVisualCard()">
+              </div>
+              <div class="form-group">
+                <label for="card-cvv">CVV</label>
+                <input type="password" id="card-cvv" class="form-control" placeholder="123" value="999" maxlength="3" onfocus="flipVisualCard(true)" onblur="flipVisualCard(false)" oninput="updateVisualCard()">
+              </div>
+            </div>
+          </div>
+
+          <!-- PANE: UPI -->
+          <div class="payment-pane" id="pay-pane-upi">
+            <div class="upi-qr-container">
+              <p style="font-size: 14px; margin-bottom: 15px;">Scan this simulated QR code with any UPI app to make the payment:</p>
+              <div class="upi-qr-mockup">
+                <svg width="100%" height="100%" viewBox="0 0 100 100">
+                  <rect width="100" height="100" fill="white" />
+                  <rect x="5" y="5" width="25" height="25" fill="black" />
+                  <rect x="9" y="9" width="17" height="17" fill="white" />
+                  <rect x="13" y="13" width="9" height="9" fill="black" />
+                  <rect x="70" y="5" width="25" height="25" fill="black" />
+                  <rect x="74" y="9" width="17" height="17" fill="white" />
+                  <rect x="78" y="13" width="9" height="9" fill="black" />
+                  <rect x="5" y="70" width="25" height="25" fill="black" />
+                  <rect x="9" y="74" width="17" height="17" fill="white" />
+                  <rect x="13" y="78" width="9" height="9" fill="black" />
+                  <rect x="35" y="10" width="10" height="5" fill="black" />
+                  <rect x="40" y="20" width="5" height="10" fill="black" />
+                  <rect x="55" y="5" width="5" height="25" fill="black" />
+                  <rect x="45" y="15" width="8" height="3" fill="black" />
+                  <rect x="10" y="35" width="20" height="5" fill="black" />
+                  <rect x="15" y="45" width="5" height="15" fill="black" />
+                  <rect x="35" y="35" width="15" height="15" fill="black" />
+                  <rect x="40" y="40" width="5" height="5" fill="white" />
+                  <rect x="55" y="35" width="10" height="10" fill="black" />
+                  <rect x="75" y="35" width="15" height="5" fill="black" />
+                  <rect x="80" y="45" width="5" height="10" fill="black" />
+                  <rect x="70" y="55" width="15" height="15" fill="black" />
+                  <rect x="75" y="60" width="5" height="5" fill="white" />
+                  <rect x="35" y="60" width="5" height="10" fill="black" />
+                  <rect x="45" y="55" width="10" height="5" fill="black" />
+                  <rect x="50" y="70" width="15" height="15" fill="black" />
+                  <rect x="55" y="75" width="5" height="5" fill="white" />
+                  <rect x="35" y="80" width="10" height="10" fill="black" />
+                  <rect x="10" y="65" width="5" height="5" fill="black" />
+                </svg>
+              </div>
+              <div class="upi-status-indicator" id="upi-status-label">Waiting for scan...</div>
+              <button class="btn-primary" style="margin-top: 15px; padding: 8px 16px;" onclick="simulateUpiScan()">Simulate Scan Approval</button>
+            </div>
+          </div>
+
+          <!-- PANE: WALLET -->
+          <div class="payment-pane" id="pay-pane-wallet">
+            <div style="padding: 15px; border: 1px solid var(--border-color); border-radius: 8px; background: var(--btn-secondary-bg); text-align: center; margin-top: 20px;">
+              <h4 style="margin-bottom: 10px; color: var(--amazon-text);">Redeem from Premium Wallet</h4>
+              <p style="font-size: 15px; margin-bottom: 8px;">Available Balance: <strong style="font-size: 18px; color: #2e7d32;" id="checkout-wallet-bal">₹0.00</strong></p>
+              <p style="font-size: 13px; color: #666; margin-bottom: 15px;" id="checkout-wallet-status-msg">Your balance is ready to pay for this transaction.</p>
+              <div id="checkout-wallet-insufficient-msg" style="display: none; color: #c62828; font-weight: bold; margin-bottom: 15px;">
+                ⚠️ Insufficient balance! Please claim more Gift Cards first.
+              </div>
             </div>
           </div>
         </div>
@@ -509,6 +668,9 @@
     </div>
   </div>
 
+  <div class="toast-container" id="toast-container"></div>
+
+  <script src="image.js"></script>
   <script src="app.js?v=10"></script>
   <script src="floating_widget.js"></script>
 </body>

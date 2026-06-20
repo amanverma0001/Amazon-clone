@@ -248,6 +248,48 @@ function scrollChatToBottom() {
 function getChatbotResponse(query) {
   const clean = query.toLowerCase().trim();
   
+  // 0. Product search recommendation interceptor
+  const searchKeywords = ["phone", "audio", "electronics", "shoes", "fitness", "beauty", "home", "kitchen", "watch", "camera", "tablet", "laptop", "soundbar", "speaker", "charger", "ssd", "dumbbell", "mat", "vacuum", "kettlebell"];
+  let matchedKeyword = searchKeywords.find(k => clean.includes(k));
+  
+  if (matchedKeyword || clean.includes("show me") || clean.includes("recommend") || clean.includes("find") || clean.includes("search for")) {
+    let searchTerm = matchedKeyword || "";
+    if (!searchTerm) {
+      const match = clean.match(/(?:show me|recommend|find me|search for|look for|buy)\s+([a-z0-9\s]+)/i);
+      if (match && match[1]) {
+        searchTerm = match[1].trim();
+      }
+    }
+    
+    if (searchTerm) {
+      const allProducts = typeof PRODUCTS !== "undefined" ? PRODUCTS : [];
+      const matches = allProducts.filter(p => 
+        p.title.toLowerCase().includes(searchTerm) || 
+        p.category.toLowerCase().includes(searchTerm) || 
+        (p.itemType && p.itemType.toLowerCase().includes(searchTerm))
+      ).slice(0, 5); // limit to 5 suggestions
+      
+      if (matches.length > 0) {
+        let productCardsHTML = `<div class="chat-product-recommendations">`;
+        matches.forEach(p => {
+          productCardsHTML += `
+            <div class="chat-product-mini-card">
+              <img src="${p.image}" alt="${p.title}" onerror="this.src='${p.fallbackImage}'">
+              <div class="chat-product-mini-title" title="${p.title}">${p.title}</div>
+              <div class="chat-product-mini-price">₹${p.price.toFixed(2)}</div>
+              <div style="display: flex; flex-direction: column; gap: 4px; width: 100%;">
+                <button class="chat-product-mini-btn" onclick="addToCart(${p.id})">Add</button>
+                <button class="chat-product-mini-btn" style="background-color: var(--btn-secondary-bg); color: var(--amazon-text);" onclick="openQuickView(${p.id})">View</button>
+              </div>
+            </div>
+          `;
+        });
+        productCardsHTML += `</div>`;
+        return `I found some premium deals matching "<strong>${searchTerm}</strong>" for you:<br>${productCardsHTML}`;
+      }
+    }
+  }
+  
   // 1. Returns & Refund keywords
   if (clean.includes("return") || clean.includes("refund") || clean.includes("exchange") || clean.includes("cancel")) {
     return "Our Amazon Premium return policy is extremely seamless! You can request a return for any item within 30 days of delivery. Go to 'Returns & Orders' in the header to view your tracking or start a return.";
@@ -282,5 +324,5 @@ function getChatbotResponse(query) {
   }
   
   // Default help fallback
-  return "Hello! I am your Premium Assistant. How can I help you today? You can ask me about:<br>• <strong>Order tracking</strong> (\"where is my order?\")<br>• <strong>Returns & Refunds</strong> (\"return policy\")<br>• <strong>Shipping fees</strong> (\"free shipping\")<br>• <strong>Wallet balance</strong> (\"gift cards\")";
+  return "Hello! I am your Premium Assistant. How can I help you today? You can ask me about:<br>• <strong>Product Recommendations</strong> (\"show me headphones\", \"find vacuum\")<br>• <strong>Order tracking</strong> (\"where is my order?\")<br>• <strong>Returns & Refunds</strong> (\"return policy\")<br>• <strong>Shipping fees</strong> (\"free shipping\")<br>• <strong>Wallet balance</strong> (\"gift cards\")";
 }

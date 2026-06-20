@@ -159,10 +159,17 @@ header {
 }
 
 /* Search bar */
-.nav-search {
-  display: flex;
+.nav-search-container {
+  position: relative;
   flex: 1;
   max-width: 800px;
+  display: flex;
+  flex-direction: column;
+}
+
+.nav-search {
+  display: flex;
+  width: 100%;
   height: 42px;
   border-radius: 6px;
   overflow: hidden;
@@ -2131,3 +2138,684 @@ html.dark-theme .floating-widget-btn .widget-badge {
     height: 460px;
   }
 }
+
+/* ================= UPGRADED PREMIUM CSS ADDITIONS ================= */
+
+/* Toast Notification System */
+.toast-container {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 10000;
+  max-width: 350px;
+}
+
+.toast {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-left: 5px solid var(--amazon-accent);
+  color: var(--amazon-text);
+  padding: 15px 20px;
+  border-radius: 8px;
+  box-shadow: var(--shadow-premium);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transform: translateX(120%);
+  animation: slideInToast 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+}
+
+.toast.success {
+  border-left-color: #2e7d32;
+}
+
+.toast.error {
+  border-left-color: #c62828;
+}
+
+.toast.info {
+  border-left-color: #0277bd;
+}
+
+.toast.prime {
+  border-left-color: #d4af37;
+  background: linear-gradient(135deg, var(--card-bg) 0%, rgba(212, 175, 55, 0.05) 100%);
+  border-right: 1px solid rgba(212, 175, 55, 0.2);
+  border-top: 1px solid rgba(212, 175, 55, 0.2);
+  border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.toast-content {
+  font-size: 14px;
+  font-weight: 500;
+  flex: 1;
+}
+
+.toast-close {
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  color: #888;
+  padding: 0;
+  line-height: 1;
+}
+
+.toast-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  width: 100%;
+  background-color: var(--border-color);
+}
+
+.toast-progress-fill {
+  height: 100%;
+  width: 100%;
+  background-color: var(--amazon-accent);
+  transform-origin: left;
+  animation: shrinkProgress 4s linear forwards;
+}
+
+.toast.success .toast-progress-fill { background-color: #2e7d32; }
+.toast.error .toast-progress-fill { background-color: #c62828; }
+.toast.info .toast-progress-fill { background-color: #0277bd; }
+.toast.prime .toast-progress-fill { background-color: #d4af37; }
+
+@keyframes slideInToast {
+  to { transform: translateX(0); }
+}
+
+@keyframes shrinkProgress {
+  from { transform: scaleX(1); }
+  to { transform: scaleX(0); }
+}
+
+/* Search Autocomplete Dropdown */
+.search-autocomplete-panel {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-top: none;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  box-shadow: var(--shadow-premium);
+  display: none;
+  flex-direction: column;
+  z-index: 1001;
+  max-height: 400px;
+  overflow-y: auto;
+  backdrop-filter: blur(12px);
+}
+
+.search-autocomplete-panel.active {
+  display: flex;
+}
+
+.autocomplete-section {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.autocomplete-section:last-child {
+  border-bottom: none;
+}
+
+.autocomplete-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: #777;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 5px 15px;
+}
+
+.autocomplete-item {
+  display: flex;
+  align-items: center;
+  padding: 8px 15px;
+  cursor: pointer;
+  gap: 12px;
+  transition: var(--transition-smooth);
+  color: var(--amazon-text);
+  text-decoration: none;
+}
+
+.autocomplete-item:hover {
+  background-color: var(--btn-secondary-bg);
+}
+
+.autocomplete-item svg {
+  width: 16px;
+  height: 16px;
+  fill: #888;
+}
+
+.autocomplete-item.product-match {
+  font-weight: 500;
+}
+
+.autocomplete-item.product-match img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  background: white;
+  border-radius: 4px;
+  padding: 2px;
+  border: 1px solid var(--border-color);
+}
+
+.autocomplete-item-text {
+  flex: 1;
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.autocomplete-item-category {
+  font-size: 11px;
+  color: #777;
+  background: var(--btn-secondary-bg);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+/* Gold Prime Mode Theme */
+.prime-active header .brand-logo {
+  color: #ffffff;
+  text-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
+}
+
+.prime-active header .brand-logo span {
+  color: #d4af37;
+  background: linear-gradient(90deg, #d4af37, #f3e5ab, #d4af37);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shineGold 3s infinite linear;
+  background-size: 200% auto;
+  font-weight: 900;
+}
+
+.prime-badge {
+  display: inline-flex;
+  align-items: center;
+  background: linear-gradient(135deg, #d4af37 0%, #aa7c11 100%);
+  color: #000000;
+  font-weight: 800;
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-left: 6px;
+  text-transform: uppercase;
+  box-shadow: 0 0 5px rgba(212, 175, 55, 0.5);
+  letter-spacing: 0.5px;
+}
+
+/* Gold Sweep animation */
+@keyframes shineGold {
+  0% { background-position: 0% center; }
+  100% { background-position: 200% center; }
+}
+
+.prime-active .nav-main {
+  border-bottom: 2px solid #d4af37;
+  box-shadow: 0 4px 20px rgba(212, 175, 55, 0.15);
+}
+
+.prime-active .nav-sub {
+  border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+.prime-active .btn-primary {
+  background: linear-gradient(180deg, #f7dfa5, #f0c14b);
+  border-color: #a88734 #9c7e31 #846a29;
+}
+
+.prime-active .btn-primary:hover {
+  background: linear-gradient(180deg, #f5d78e, #eeb933);
+}
+
+.prime-active .step-indicator.active span {
+  background-color: #d4af37;
+}
+
+.prime-active .step-indicator.completed span {
+  background-color: #aa7c11;
+}
+
+.prime-active .badge-tag {
+  background: linear-gradient(135deg, #d4af37 0%, #aa7c11 100%);
+  color: #000;
+}
+
+/* Delivery Progress Bar inside Cart Drawer */
+.cart-delivery-progress {
+  padding: 15px;
+  background: var(--btn-secondary-bg);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.progress-text {
+  font-size: 13px;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.progress-bar-bg {
+  height: 8px;
+  background-color: var(--border-color);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background-color: #cc0c39;
+  width: 0%;
+  transition: width 0.4s ease, background-color 0.4s ease;
+}
+
+.progress-bar-fill.eligible {
+  background-color: #2e7d32;
+}
+
+/* Promo Code Box */
+.cart-promo-box {
+  padding: 15px;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  gap: 10px;
+}
+
+.promo-input {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  font-size: 14px;
+  background-color: var(--input-bg);
+  color: var(--input-text);
+  outline: none;
+}
+
+.promo-btn {
+  padding: 8px 15px;
+  background-color: var(--amazon-accent);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.promo-btn:hover {
+  background-color: var(--amazon-accent-hover);
+}
+
+/* Invoice Calculations rows */
+.invoice-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 6px;
+}
+
+.dark-theme .invoice-row {
+  color: #bbb;
+}
+
+.invoice-row.total-amount {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--amazon-text);
+  border-top: 1px dashed var(--border-color);
+  padding-top: 8px;
+  margin-top: 8px;
+}
+
+/* Checkout Enhancements */
+.address-cards-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.address-select-card {
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  padding: 15px;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  background: var(--card-bg);
+  position: relative;
+}
+
+.address-select-card:hover {
+  border-color: var(--amazon-accent-hover);
+}
+
+.address-select-card.active {
+  border-color: var(--amazon-accent);
+  background: rgba(254, 189, 105, 0.05);
+}
+
+.address-select-card input[type="radio"] {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  accent-color: var(--amazon-accent);
+}
+
+.address-card-title {
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+.address-card-body {
+  font-size: 13px;
+  color: #555;
+  line-height: 1.4;
+}
+
+.dark-theme .address-card-body {
+  color: #bbb;
+}
+
+/* Checkout payment selections */
+.checkout-payment-methods {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 15px;
+}
+
+.pay-tab-btn {
+  padding: 8px 15px;
+  border: 1px solid var(--border-color);
+  background: var(--btn-secondary-bg);
+  color: var(--amazon-text);
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: var(--transition-smooth);
+}
+
+.pay-tab-btn.active {
+  background-color: var(--amazon-accent);
+  border-color: var(--amazon-accent);
+  color: var(--amazon-dark);
+}
+
+.payment-pane {
+  display: none;
+}
+
+.payment-pane.active {
+  display: block;
+}
+
+/* 3D card layout */
+.credit-card-3d-wrapper {
+  perspective: 1000px;
+  width: 100%;
+  max-width: 320px;
+  height: 180px;
+  margin: 15px auto 25px auto;
+}
+
+.credit-card-3d {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.credit-card-3d.flipped {
+  transform: rotateY(180deg);
+}
+
+.card-face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 12px;
+  padding: 20px;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+  font-family: monospace;
+}
+
+.card-face.front {
+  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+}
+
+.prime-active .card-face.front {
+  background: linear-gradient(135deg, #1f1f1f 0%, #434343 100%);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+.card-face.back {
+  background: linear-gradient(135deg, #16222f 0%, #203a43 100%);
+  transform: rotateY(180deg);
+  padding: 20px 0;
+}
+
+.card-chip {
+  width: 40px;
+  height: 30px;
+  background: linear-gradient(135deg, #bf953f 0%, #fcf6ba 50%, #b38728 100%);
+  border-radius: 4px;
+}
+
+.card-logo {
+  font-weight: 800;
+  font-size: 16px;
+  font-style: italic;
+  text-align: right;
+}
+
+.card-number-display {
+  font-size: 18px;
+  letter-spacing: 2px;
+  word-spacing: 4px;
+  margin: 10px 0;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+}
+
+.card-info-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.card-magnetic-strip {
+  width: 100%;
+  height: 35px;
+  background: #111;
+  margin-top: 10px;
+}
+
+.card-signature-area {
+  background: #fff;
+  height: 30px;
+  width: 75%;
+  margin: 15px 0 0 15px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  color: #000;
+  font-weight: bold;
+  padding-right: 10px;
+}
+
+/* UPI Pane */
+.upi-qr-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 15px;
+  text-align: center;
+}
+
+.upi-qr-mockup {
+  width: 150px;
+  height: 150px;
+  border: 1px solid var(--border-color);
+  padding: 10px;
+  background: white;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+
+.upi-status-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #888;
+  margin-top: 5px;
+}
+
+.upi-status-indicator.loading::before {
+  content: '';
+  width: 14px;
+  height: 14px;
+  border: 2px solid #ccc;
+  border-top-color: var(--amazon-accent-hover);
+  border-radius: 50%;
+  animation: messageSpinner 0.8s infinite linear;
+}
+
+.upi-status-indicator.success {
+  color: #2e7d32;
+}
+
+/* Quick View Customer Review Forms */
+.modal-review-section {
+  border-top: 1px solid var(--border-color);
+  padding-top: 20px;
+  margin-top: 25px;
+}
+
+.review-form-container {
+  background: var(--btn-secondary-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.star-rating-selector {
+  display: flex;
+  gap: 5px;
+  font-size: 24px;
+  cursor: pointer;
+  margin-bottom: 15px;
+}
+
+.star-rating-selector span {
+  color: #ccc;
+  transition: var(--transition-smooth);
+}
+
+.star-rating-selector span.selected,
+.star-rating-selector span:hover,
+.star-rating-selector span:hover ~ span {
+  color: #ffa41c;
+}
+
+/* Support Chat Inline Product Slider Cards */
+.chat-product-recommendations {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 8px 0;
+  margin: 5px 0;
+  max-width: 100%;
+}
+
+.chat-product-mini-card {
+  flex: 0 0 130px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background: var(--card-bg);
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  box-shadow: var(--shadow-subtle);
+  transition: var(--transition-smooth);
+}
+
+.chat-product-mini-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.chat-product-mini-card img {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  margin-bottom: 5px;
+}
+
+.chat-product-mini-title {
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.2;
+  margin-bottom: 4px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  height: 26px;
+  color: var(--amazon-text);
+}
+
+.chat-product-mini-price {
+  font-size: 11px;
+  font-weight: 700;
+  color: #cc0c39;
+  margin-bottom: 6px;
+}
+
+.chat-product-mini-btn {
+  font-size: 9px;
+  padding: 4px 8px;
+  background-color: var(--amazon-accent);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 700;
+  width: 100%;
+}
+
+.chat-product-mini-btn:hover {
+  background-color: var(--amazon-accent-hover);
+}
+

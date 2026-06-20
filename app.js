@@ -1285,6 +1285,13 @@ let userProfile = {
     email: "guest@amazonpremium.com"
 };
 
+// Gold Prime Mode State
+let isPrimeActive = localStorage.getItem("amazon-prime-active") === "true";
+let activeCoupon = null;
+let selectedCheckoutAddressType = "home";
+let selectedPaymentMethod = "card";
+let upiPaymentApproved = false;
+
 // Public helper to replace a product's images at runtime.
 // Usage (in browser console): setProductImage(12, 'images/sony-x1-500.jpg', 'images/sony-x1-1200.jpg')
 window.setProductImage = function(productId, smallUrl, largeUrl) {
@@ -1377,8 +1384,12 @@ let dealsTimeRemaining = 3600 * 4 + 1800; // 4h 30m
 
 // Document Ready Bootstrap
 document.addEventListener("DOMContentLoaded", () => {
+    if (isPrimeActive) {
+        document.documentElement.classList.add("prime-active");
+    }
     renderProducts();
     setupEventListeners();
+    setupAutocomplete();
     initHeroCarousel();
     updateHeaderAddress();
     updateHeaderUserDisplay();
@@ -1667,7 +1678,7 @@ window.claimGiftCardCode = function() {
     const code = codeInput.value.trim().toUpperCase();
 
     if (!code) {
-        alert("Please enter a valid gift card promo code!");
+        showNotification("Please enter a valid gift card promo code!", "error");
         return;
     }
 
@@ -1676,15 +1687,19 @@ window.claimGiftCardCode = function() {
         claimAmount = 50.00;
     } else if (code === "AMZ-GIFT-100") {
         claimAmount = 100.00;
+    } else if (code === "AMZ-GIFT-5000") {
+        claimAmount = 5000.00;
+    } else if (code === "AMZ-GIFT-10000") {
+        claimAmount = 10000.00;
     } else if (code.startsWith("AMZ-") && code.length >= 8) {
         claimAmount = 25.00;
     } else {
-        alert("Invalid or expired gift card code! Try using 'AMZ-GIFT-50' or 'AMZ-GIFT-100'.");
+        showNotification("Invalid or expired gift card code! Try using 'AMZ-GIFT-5000' or 'AMZ-GIFT-10000'.", "error");
         return;
     }
 
     userProfile.walletBalance += claimAmount;
-    alert(`Success! Successfully credited ₹${claimAmount.toFixed(2)} to your Premium Wallet.`);
+    showNotification(`Success! Credited ₹${claimAmount.toFixed(2)} to your Premium Wallet.`, "success");
 
     codeInput.value = "";
     renderGiftcardDashboard();
@@ -1715,7 +1730,7 @@ window.createNewRegistry = function(e) {
     const date = document.getElementById("registry-creator-date").value;
 
     if (!name || !date) {
-        alert("Please fill in all registry fields!");
+        showNotification("Please fill in all registry fields!", "error");
         return;
     }
 
@@ -1723,14 +1738,14 @@ window.createNewRegistry = function(e) {
     if (regList) {
         const newItemHTML = `
       <div style="border-left: 4px solid #2e7d32; padding: 15px; margin-bottom: 15px; background-color: #e8f5e9;">
-        <h4 style="margin-bottom: 5px;">₹{name}'s Premium ${type} Registry</h4>
+        <h4 style="margin-bottom: 5px;">${name}'s Premium ${type} Registry</h4>
         <p style="font-size: 13px; color: #555;">Event Date: ${new Date(date).toLocaleDateString('en-US', {month: 'long', day: 'numeric', year: 'numeric'})} | Created Successfully!</p>
       </div>
     `;
         regList.innerHTML = newItemHTML + regList.innerHTML;
     }
 
-    alert(`Congratulations! Your ${type} Registry was created successfully.`);
+    showNotification(`Your ${type} Registry was created successfully.`, "success");
     document.getElementById("registry-form-tag").reset();
 }
 
@@ -1739,12 +1754,15 @@ window.toggleWishlistItem = function(event, productId) {
     if (event) event.stopPropagation();
 
     const idx = wishlist.indexOf(productId);
+    const prod = PRODUCTS.find(p => p.id === productId);
+    const title = prod ? prod.title : "Product";
+    
     if (idx > -1) {
         wishlist.splice(idx, 1);
-        alert("Item removed from your shopping wishlist!");
+        showNotification(`"${title}" removed from your wishlist!`, "info");
     } else {
         wishlist.push(productId);
-        alert("Item saved to your shopping wishlist!");
+        showNotification(`"${title}" saved to your wishlist!`, "success");
     }
 
     renderProducts();
@@ -1936,13 +1954,29 @@ window.submitProductReview = function(e) {
   
   prod.reviewsList.push(newReview);
   
+  // Recalculate average rating & reviewsCount in real time
+  prod.rating = parseFloat(((prod.rating * prod.reviews + rating) / (prod.reviews + 1)).toFixed(1));
+  prod.reviews++;
+  
   const container = document.getElementById("tab-reviews-list-container");
   if (container) {
     container.innerHTML = renderReviewsListHTML(prod.reviewsList);
   }
   
+  // Re-render tab specs overview ratings to match immediately
+  const overviewRatingContainer = document.querySelector(".quickview-rating");
+  if (overviewRatingContainer) {
+    overviewRatingContainer.innerHTML = `
+      <span class="stars">${getRatingStarsHTML(prod.rating)}</span>
+      <span class="rating-count">(${prod.reviews} ratings)</span>
+    `;
+  }
+  
+  // Refresh main catalog displays
+  renderProducts();
+  
   document.getElementById("rev-text").value = "";
-  alert("Thank you! Your verified customer review was added successfully.");
+  showNotification("Thank you! Your verified customer review was added successfully.", "success");
 }
 
 // Account Center Modal Actions
@@ -1968,14 +2002,49 @@ function updateAccountViewDisplay() {
   if (!body) return;
   
   if (userProfile.signedIn) {
+    const checkedState = isPrimeActive ? "checked" : "";
+    const memberType = isPrimeActive ? "Prime Member" : "Premium Gold Member";
     body.innerHTML = `
       <div style="text-align: center; margin-bottom: 25px;">
-        <div style="width: 70px; height: 70px; border-radius: 50%; background-color: var(--amazon-accent); color: var(--amazon-dark); font-size: 32px; font-weight: 800; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px auto;">
+        <div style="width: 70px; height: 70px; border-radius: 50%; background-color: var(--amazon-accent); color: var(--amazon-dark); font-size: 32px; font-weight: 800; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px auto; border: 2px solid ${isPrimeActive ? '#d4af37' : 'transparent'}; box-shadow: ${isPrimeActive ? '0 0 10px rgba(212,175,55,0.6)' : 'none'};">
           ${userProfile.username[0].toUpperCase()}
         </div>
         <h3>Welcome, ${userProfile.username}!</h3>
-        <p style="color: #666; font-size: 14px;">${userProfile.email} | Premium Gold Member</p>
+        <p style="color: #666; font-size: 14px;">${userProfile.email} | ${memberType}</p>
       </div>
+
+      <!-- Prime Switch Card -->
+      <div style="border: 1px solid ${isPrimeActive ? '#d4af37' : '#ddd'}; border-radius: 8px; padding: 15px; background: ${isPrimeActive ? 'linear-gradient(135deg, rgba(212,175,55,0.05) 0%, transparent 100%)' : '#fafafa'}; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: ${isPrimeActive ? '0 4px 12px rgba(212,175,55,0.1)' : 'none'}; transition: var(--transition-smooth);">
+        <div>
+          <strong style="color: ${isPrimeActive ? '#aa7c11' : 'var(--amazon-dark)'}; display: block; font-size: 14px;">👑 Amazon Prime Club</strong>
+          <span style="font-size: 12px; color: #666;">Free delivery & prime deals unlocked!</span>
+        </div>
+        <label class="switch-container" style="position: relative; display: inline-block; width: 44px; height: 24px; cursor: pointer;">
+          <input type="checkbox" id="prime-toggle-chk" style="opacity: 0; width: 0; height: 0;" ${checkedState} onchange="togglePrimeMode(this.checked)">
+          <span class="switch-slider" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 24px; display: block;"></span>
+        </label>
+      </div>
+
+      <!-- Switch CSS in HTML -->
+      <style>
+        .switch-container input:checked + .switch-slider {
+          background-color: #d4af37;
+        }
+        .switch-slider:before {
+          position: absolute;
+          content: "";
+          height: 16px;
+          width: 16px;
+          left: 4px;
+          bottom: 4px;
+          background-color: white;
+          transition: .4s;
+          border-radius: 50%;
+        }
+        .switch-container input:checked + .switch-slider:before {
+          transform: translateX(20px);
+        }
+      </style>
 
       <div style="background-color: #f7f7f7; border: 1px solid #ddd; border-radius: 8px; padding: 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
         <div>
@@ -2030,7 +2099,7 @@ window.userSignIn = function(e) {
   updateHeaderUserDisplay();
   updateAccountViewDisplay();
   
-  alert(`Welcome to Amazon Premium, ${name}! You are now signed in.`);
+  showNotification(`Welcome to Amazon Premium, ${name}! You are now signed in.`, "success");
   closeModal("account-modal-overlay");
 }
 
@@ -2040,19 +2109,25 @@ window.userSignOut = function() {
   userProfile.email = "guest@amazonpremium.com";
   userProfile.walletBalance = 0.00;
   
+  // Deactivate prime on signout
+  if (isPrimeActive) {
+    togglePrimeMode(false);
+  }
+  
   updateHeaderUserDisplay();
   updateAccountViewDisplay();
   
-  alert("You have successfully signed out.");
+  showNotification("You have successfully signed out.", "info");
   closeModal("account-modal-overlay");
 }
 
 function updateHeaderUserDisplay() {
   const accountTriggerText = document.getElementById("header-account-trigger-text");
   if (accountTriggerText) {
+    const primeBadge = isPrimeActive ? `<span class="prime-badge">Prime</span>` : "";
     if (userProfile.signedIn) {
       accountTriggerText.innerHTML = `
-        <span class="nav-opt-line-1">Hello, ${userProfile.username}</span>
+        <span class="nav-opt-line-1" style="display: flex; align-items: center;">Hello, ${userProfile.username}${primeBadge}</span>
         <span class="nav-opt-line-2">Account & Lists</span>
       `;
     } else {
@@ -2086,12 +2161,13 @@ window.saveAddress = function() {
   const country = document.getElementById("addr-country").value;
   
   if (!name || !street || !city || !zip) {
-    alert("Please complete all shipping address fields!");
+    showNotification("Please complete all shipping address fields!", "error");
     return;
   }
   
   deliveryAddress = { fullName: name, street, city, zip, country };
   updateHeaderAddress();
+  showNotification("Shipping address updated successfully.", "success");
   closeModal("address-modal-overlay");
 }
 
@@ -2170,17 +2246,32 @@ window.closeModal = function(modalId) {
 // Multi-step Checkout Flow
 window.openCheckout = function() {
   if (cart.length === 0) {
-    alert("Please add items to your shopping cart first!");
+    showNotification("Please add items to your shopping cart first!", "error");
     return;
   }
   toggleCartDrawer(false);
   const checkoutModal = document.getElementById("checkout-modal-overlay");
   if (checkoutModal) {
+    // Populate form fields
     document.getElementById("shipping-name").value = deliveryAddress.fullName;
     document.getElementById("shipping-address").value = `${deliveryAddress.street}, ${deliveryAddress.city}, ${deliveryAddress.zip}, ${deliveryAddress.country}`;
     
     checkoutModal.classList.add("active");
     currentCheckoutStep = 1;
+    upiPaymentApproved = false;
+    
+    // Switch default payment method to credit card on open
+    switchPaymentMethod("card");
+    
+    // Reset custom address state
+    const customAddrChk = document.getElementById("checkout-custom-addr-toggle");
+    if (customAddrChk) {
+      customAddrChk.checked = false;
+      const customAddrForm = document.getElementById("checkout-custom-address-form");
+      if (customAddrForm) customAddrForm.style.display = "none";
+    }
+    selectCheckoutAddress("home");
+    
     updateCheckoutStepView();
   }
 }
@@ -2222,22 +2313,75 @@ function updateCheckoutStepView() {
 
 window.checkoutNext = function() {
   if (currentCheckoutStep === 1) {
-    const name = document.getElementById("shipping-name").value;
-    const address = document.getElementById("shipping-address").value;
-    if (!name || !address) {
-      alert("Please fill in shipping name and destination address!");
-      return;
-    }
-    currentCheckoutStep = 2;
-    updateCheckoutStepView();
-  } else if (currentCheckoutStep === 2) {
-    const cardNum = document.getElementById("card-number").value;
-    if (!cardNum || cardNum.length < 12) {
-      alert("Please enter a valid card credential!");
-      return;
+    // Address validation step
+    const customAddrChecked = document.getElementById("checkout-custom-addr-toggle")?.checked;
+    if (customAddrChecked) {
+      const name = document.getElementById("shipping-name").value.trim();
+      const address = document.getElementById("shipping-address").value.trim();
+      if (!name || !address) {
+        showNotification("Please fill in shipping name and destination address!", "error");
+        return;
+      }
+      deliveryAddress = {
+        fullName: name,
+        street: address,
+        city: "",
+        zip: "",
+        country: "India"
+      };
+      updateHeaderAddress();
     }
     
-    const trackingNewItems = cart.map((item, index) => {
+    currentCheckoutStep = 2;
+    updateCheckoutStepView();
+    
+    // Trigger wallet display refresh if wallet tab was left selected
+    if (selectedPaymentMethod === "wallet") {
+      switchPaymentMethod("wallet");
+    }
+  } else if (currentCheckoutStep === 2) {
+    // Invoice totals calculation
+    let subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+    let deliveryFee = (subtotal >= 1500 || isPrimeActive) ? 0.00 : 99.00;
+    let discount = 0.00;
+    if (activeCoupon === "WELCOME10") discount = subtotal * 0.10;
+    else if (activeCoupon === "PRIME20" && isPrimeActive) discount = subtotal * 0.20;
+    let taxableAmount = Math.max(0, subtotal - discount);
+    let gstTax = taxableAmount * 0.18;
+    let netTotal = taxableAmount + deliveryFee + gstTax;
+    
+    // Payment method validation
+    if (selectedPaymentMethod === "card") {
+      const cardName = document.getElementById("card-name").value.trim();
+      const cardNum = document.getElementById("card-number").value.replace(/\s/g, "");
+      const cardExp = document.getElementById("card-expiry").value.trim();
+      const cardCvv = document.getElementById("card-cvv").value.trim();
+      
+      if (!cardName || cardNum.length < 12 || !cardExp || cardCvv.length < 3) {
+        showNotification("Please enter a valid credit card credentials and detail parameters!", "error");
+        return;
+      }
+    } else if (selectedPaymentMethod === "upi") {
+      if (!upiPaymentApproved) {
+        showNotification("UPI payment scan pending! Please click the Simulator QR scan approval button.", "error");
+        return;
+      }
+    } else if (selectedPaymentMethod === "wallet") {
+      if (userProfile.walletBalance < netTotal) {
+        showNotification("Insufficient balance in Premium Wallet! Claim more Gift Card codes first.", "error");
+        return;
+      }
+      // Deduct wallet balance
+      userProfile.walletBalance -= netTotal;
+      updateAccountViewDisplay();
+      
+      // Sync gift card dashboard labels if open
+      const giftcardBalLabel = document.getElementById("giftcard-wallet-bal");
+      if (giftcardBalLabel) giftcardBalLabel.textContent = `₹${userProfile.walletBalance.toFixed(2)}`;
+    }
+    
+    // Record simulating orders
+    const trackingNewItems = cart.map(item => {
       return {
         orderId: `AMZ-${Math.floor(100000 + Math.random() * 900000)}-DEL`,
         itemName: item.title,
@@ -2254,10 +2398,22 @@ window.checkoutNext = function() {
     
     trackingOrders = [...trackingNewItems, ...trackingOrders];
     
+    // Empty Cart
+    cart = []; 
+    activeCoupon = null;
+    upiPaymentApproved = false;
+    
+    // Reset scan approval message state
+    const upiLabel = document.getElementById("upi-status-label");
+    if (upiLabel) {
+      upiLabel.textContent = "Waiting for scan...";
+      upiLabel.className = "upi-status-indicator";
+    }
+    
+    updateCartBadge();
     currentCheckoutStep = 3;
     updateCheckoutStepView();
-    cart = []; 
-    updateCartBadge();
+    showNotification("Premium transaction approved! Order created successfully.", "success");
   } else {
     closeModal("checkout-modal-overlay");
   }
@@ -2295,6 +2451,7 @@ window.addToCart = function(productId) {
   }
   
   updateCartBadge();
+  showNotification(`Added "${prod.title}" to Cart!`, "success");
   toggleCartDrawer(true);
 }
 
@@ -2309,6 +2466,15 @@ function updateCartBadge() {
 function renderCartItems() {
   const container = document.getElementById("cart-items-list");
   const subtotalLabel = document.getElementById("cart-subtotal");
+  const invoiceSubtotal = document.getElementById("invoice-subtotal");
+  const invoiceDelivery = document.getElementById("invoice-delivery");
+  const invoiceDiscountRow = document.getElementById("invoice-discount-row");
+  const invoiceDiscount = document.getElementById("invoice-discount");
+  const invoiceTax = document.getElementById("invoice-tax");
+  
+  const progressText = document.getElementById("cart-delivery-progress-text");
+  const progressBar = document.getElementById("cart-delivery-progress-bar");
+  
   if (!container) return;
   
   if (cart.length === 0) {
@@ -2323,6 +2489,17 @@ function renderCartItems() {
       </div>
     `;
     if (subtotalLabel) subtotalLabel.textContent = "₹0.00";
+    if (invoiceSubtotal) invoiceSubtotal.textContent = "₹0.00";
+    if (invoiceDelivery) invoiceDelivery.textContent = "₹0.00";
+    if (invoiceDiscountRow) invoiceDiscountRow.style.display = "none";
+    if (invoiceDiscount) invoiceDiscount.textContent = "-₹0.00";
+    if (invoiceTax) invoiceTax.textContent = "₹0.00";
+    
+    if (progressBar) {
+      progressBar.style.width = "0%";
+      progressBar.classList.remove("eligible");
+    }
+    if (progressText) progressText.textContent = "Add ₹1,500.00 more to qualify for FREE delivery!";
     return;
   }
   
@@ -2332,7 +2509,7 @@ function renderCartItems() {
     subtotal += itemTotal;
     return `
       <div class="cart-item">
-        <img class="cart-item-img" src="${item.image}" alt="${item.title}">
+        <img class="cart-item-img" src="${item.image}" alt="${item.title}" onerror="this.src='${item.fallbackImage}'">
         <div class="cart-item-details">
           <div class="cart-item-title">${item.title}</div>
           <div class="cart-item-price">₹${item.price.toFixed(2)}</div>
@@ -2349,7 +2526,61 @@ function renderCartItems() {
     `;
   }).join("");
   
-  if (subtotalLabel) subtotalLabel.textContent = `₹${subtotal.toFixed(2)}`;
+  // Delivery Fee calculation
+  let deliveryFee = 99.00;
+  if (isPrimeActive || subtotal >= 1500) {
+    deliveryFee = 0.00;
+  }
+  
+  // Progress Bar updates
+  if (progressBar && progressText) {
+    if (isPrimeActive) {
+      progressBar.style.width = "100%";
+      progressBar.classList.add("eligible");
+      progressText.textContent = "👑 Prime Advantage: Free Express Delivery activated!";
+    } else if (subtotal >= 1500) {
+      progressBar.style.width = "100%";
+      progressBar.classList.add("eligible");
+      progressText.textContent = "🎉 Congratulations! Your order qualifies for FREE delivery.";
+    } else {
+      const remaining = 1500 - subtotal;
+      const pct = Math.min(100, (subtotal / 1500) * 100);
+      progressBar.style.width = `${pct}%`;
+      progressBar.classList.remove("eligible");
+      progressText.textContent = `Add ₹${remaining.toFixed(2)} more to qualify for FREE delivery!`;
+    }
+  }
+  
+  // Coupons logic
+  let discount = 0;
+  if (activeCoupon === "WELCOME10") {
+    discount = subtotal * 0.10;
+  } else if (activeCoupon === "PRIME20") {
+    if (isPrimeActive) {
+      discount = subtotal * 0.20;
+    } else {
+      activeCoupon = null; // Reset coupon if Prime deactivated
+    }
+  }
+  
+  // simulated GST 18%
+  const taxableSubtotal = Math.max(0, subtotal - discount);
+  const tax = taxableSubtotal * 0.18;
+  const netTotal = taxableSubtotal + deliveryFee + tax;
+  
+  // Update invoice UI
+  if (invoiceSubtotal) invoiceSubtotal.textContent = `₹${subtotal.toFixed(2)}`;
+  if (invoiceDelivery) invoiceDelivery.textContent = deliveryFee === 0 ? "FREE" : `₹${deliveryFee.toFixed(2)}`;
+  
+  if (discount > 0) {
+    if (invoiceDiscountRow) invoiceDiscountRow.style.display = "flex";
+    if (invoiceDiscount) invoiceDiscount.textContent = `-₹${discount.toFixed(2)}`;
+  } else {
+    if (invoiceDiscountRow) invoiceDiscountRow.style.display = "none";
+  }
+  
+  if (invoiceTax) invoiceTax.textContent = `₹${tax.toFixed(2)}`;
+  if (subtotalLabel) subtotalLabel.textContent = `₹${netTotal.toFixed(2)}`;
 }
 
 window.changeQty = function(productId, delta) {
@@ -2508,3 +2739,399 @@ function attachImageLoadHandlers() {
 window.getCartState = () => cart;
 window.getWishlistState = () => wishlist;
 window.getTrackingOrdersState = () => trackingOrders;
+
+// ================= PREMIUM INTERACTIVE FEATURE ENHANCEMENTS =================
+
+// 1. Toast Notification System API
+window.showNotification = function(message, type = 'info') {
+  const container = document.getElementById("toast-container");
+  if (!container) return;
+  
+  const toast = document.createElement("div");
+  toast.className = `toast ${type}`;
+  
+  let icon = "🔔";
+  if (type === "success") icon = "✔️";
+  else if (type === "error") icon = "❌";
+  else if (type === "prime") icon = "👑";
+  else if (type === "info") icon = "ℹ️";
+  
+  toast.innerHTML = `
+    <div style="font-size: 18px; line-height: 1;">${icon}</div>
+    <div class="toast-content">${message}</div>
+    <button class="toast-close" onclick="this.parentElement.remove()">&times;</button>
+    <div class="toast-progress">
+      <div class="toast-progress-fill"></div>
+    </div>
+  `;
+  
+  container.appendChild(toast);
+  
+  // Auto-remove after 4 seconds
+  setTimeout(() => {
+    toast.style.animation = "slideInToast 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) reverse forwards";
+    setTimeout(() => {
+      toast.remove();
+    }, 300);
+  }, 4000);
+}
+
+// 2. Prime Mode Toggle & Gold Theme Shimmer
+window.togglePrimeMode = function(active) {
+  isPrimeActive = active;
+  localStorage.setItem("amazon-prime-active", isPrimeActive);
+  
+  if (isPrimeActive) {
+    document.documentElement.classList.add("prime-active");
+    showNotification("👑 Prime membership activated successfully! Free Shipping unlocked.", "prime");
+  } else {
+    document.documentElement.classList.remove("prime-active");
+    showNotification("Prime membership deactivated.", "info");
+  }
+  
+  updateHeaderUserDisplay();
+  updateAccountViewDisplay();
+  renderCartItems();
+}
+
+// 3. Search Autocomplete Overlay Logic
+function setupAutocomplete() {
+  const searchInput = document.getElementById("search-input-field");
+  const dropdown = document.getElementById("search-autocomplete-dropdown");
+  
+  if (!searchInput || !dropdown) return;
+  
+  // Show suggestions on focus
+  searchInput.addEventListener("focus", () => {
+    renderAutocomplete(searchInput.value.trim());
+  });
+  
+  // Hide on click outside
+  document.addEventListener("click", (e) => {
+    if (!searchInput.contains(e.target) && !dropdown.contains(e.target)) {
+      dropdown.classList.remove("active");
+    }
+  });
+  
+  // Render suggestions on typing
+  searchInput.addEventListener("input", (e) => {
+    renderAutocomplete(e.target.value.trim());
+  });
+}
+
+function renderAutocomplete(query) {
+  const dropdown = document.getElementById("search-autocomplete-dropdown");
+  if (!dropdown) return;
+  
+  if (!query) {
+    // Show recent searches and trending categories
+    const recent = JSON.parse(localStorage.getItem("recent-searches")) || ["Sony Headphones", "Dumbbells", "Air Fryer", "Moisturizer"];
+    
+    dropdown.innerHTML = `
+      <div class="autocomplete-section">
+        <div class="autocomplete-title">Recent Searches</div>
+        ${recent.map(term => `
+          <div class="autocomplete-item" onclick="selectAutocompleteTerm('${term.replace(/'/g, "\\'")}')">
+            <svg viewBox="0 0 24 24" width="16" height="16"><path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.53.85-1.07-3.63-2.16V8h-1.5z"/></svg>
+            <div class="autocomplete-item-text">${term}</div>
+          </div>
+        `).join("")}
+      </div>
+      <div class="autocomplete-section">
+        <div class="autocomplete-title">Trending Categories</div>
+        <div class="autocomplete-item" onclick="selectAutocompleteCategory('Electronics')">
+          <div class="autocomplete-item-text">⚡ Electronics Deals</div>
+        </div>
+        <div class="autocomplete-item" onclick="selectAutocompleteCategory('Fitness')">
+          <div class="autocomplete-item-text">💪 Fitness & Wellness Essentials</div>
+        </div>
+        <div class="autocomplete-item" onclick="selectAutocompleteCategory('Home & Kitchen')">
+          <div class="autocomplete-item-text">🍳 Modern Home & Kitchen Gadgets</div>
+        </div>
+      </div>
+    `;
+    dropdown.classList.add("active");
+    return;
+  }
+  
+  const cleanQuery = query.toLowerCase();
+  const textMatches = [];
+  const categoryMatches = new Set();
+  const productMatches = [];
+  
+  PRODUCTS.forEach(p => {
+    const titleMatch = p.title.toLowerCase().includes(cleanQuery);
+    const catMatch = p.category.toLowerCase().includes(cleanQuery);
+    
+    if (titleMatch) {
+      productMatches.push(p);
+      if (textMatches.length < 5) textMatches.push(p.title);
+    }
+    if (catMatch) {
+      categoryMatches.add(p.category);
+    }
+  });
+  
+  let html = "";
+  
+  // 1. Departments
+  if (categoryMatches.size > 0) {
+    html += `
+      <div class="autocomplete-section">
+        <div class="autocomplete-title">Departments</div>
+        ${[...categoryMatches].slice(0, 2).map(cat => `
+          <div class="autocomplete-item" onclick="selectAutocompleteCategory('${cat}')">
+            <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+            <div class="autocomplete-item-text">Shop in <strong>${cat}</strong></div>
+          </div>
+        `).join("")}
+      </div>
+    `;
+  }
+  
+  // 2. Direct Product Matches
+  if (productMatches.length > 0) {
+    html += `
+      <div class="autocomplete-section">
+        <div class="autocomplete-title">Product Matches</div>
+        ${productMatches.slice(0, 3).map(p => `
+          <div class="autocomplete-item product-match" onclick="openQuickView(${p.id})">
+            <img src="${p.image}" alt="${p.title}" onerror="this.src='${p.fallbackImage}'">
+            <div class="autocomplete-item-text">${p.title}</div>
+            <div class="autocomplete-item-category">₹${p.price.toFixed(2)}</div>
+          </div>
+        `).join("")}
+      </div>
+    `;
+  }
+  
+  // 3. Search Suggestions
+  if (textMatches.length > 0) {
+    html += `
+      <div class="autocomplete-section">
+        <div class="autocomplete-title">Search Suggestions</div>
+        ${textMatches.map(term => `
+          <div class="autocomplete-item" onclick="selectAutocompleteTerm('${term.replace(/'/g, "\\'")}')">
+            <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+            <div class="autocomplete-item-text">${term}</div>
+          </div>
+        `).join("")}
+      </div>
+    `;
+  }
+  
+  if (!html) {
+    html = `
+      <div style="padding: 15px; text-align: center; color: #777; font-size: 13px;">
+        No suggestions found for "${query}"
+      </div>
+    `;
+  }
+  
+  dropdown.innerHTML = html;
+  dropdown.classList.add("active");
+}
+
+window.selectAutocompleteTerm = function(term) {
+  const searchInput = document.getElementById("search-input-field");
+  if (searchInput) {
+    searchInput.value = term;
+    searchQuery = term;
+    
+    // Save to local searches history
+    let recent = JSON.parse(localStorage.getItem("recent-searches")) || [];
+    recent = [term, ...recent.filter(t => t !== term)].slice(0, 5);
+    localStorage.setItem("recent-searches", JSON.stringify(recent));
+    
+    showDashboard("main");
+    renderProducts();
+  }
+  const dropdown = document.getElementById("search-autocomplete-dropdown");
+  if (dropdown) dropdown.classList.remove("active");
+}
+
+window.selectAutocompleteCategory = function(cat) {
+  activeCategory = cat;
+  const select = document.getElementById("search-dept-select");
+  if (select) select.value = cat;
+  
+  document.querySelectorAll(".nav-sub-item").forEach(item => {
+    if (item.getAttribute("data-category") === cat) {
+      item.classList.add("active");
+    } else {
+      item.classList.remove("active");
+    }
+  });
+  
+  showDashboard("main");
+  renderProducts();
+  
+  const dropdown = document.getElementById("search-autocomplete-dropdown");
+  if (dropdown) dropdown.classList.remove("active");
+}
+
+// 4. Coupon Promo Code Application
+window.applyCartPromoCode = function() {
+  const promoInput = document.getElementById("cart-promo-input");
+  if (!promoInput) return;
+  const code = promoInput.value.trim().toUpperCase();
+  
+  if (!code) {
+    showNotification("Please enter a promo code first!", "error");
+    return;
+  }
+  
+  if (code === "WELCOME10") {
+    activeCoupon = "WELCOME10";
+    showNotification("Promo Code WELCOME10 applied! 10% Discount credited.", "success");
+  } else if (code === "PRIME20") {
+    if (!isPrimeActive) {
+      showNotification("Promo Code PRIME20 is exclusive to Prime members! Join Prime first.", "error");
+      return;
+    }
+    activeCoupon = "PRIME20";
+    showNotification("Promo Code PRIME20 applied! 20% Prime Discount credited.", "success");
+  } else {
+    showNotification("Invalid or expired promo code!", "error");
+    return;
+  }
+  
+  promoInput.value = "";
+  renderCartItems();
+}
+
+// 5. Checkout Advanced Interactive Enhancements
+window.switchPaymentMethod = function(method) {
+  selectedPaymentMethod = method;
+  
+  document.querySelectorAll(".pay-tab-btn").forEach(btn => btn.classList.remove("active"));
+  const activeBtn = document.getElementById(`pay-btn-${method}`);
+  if (activeBtn) activeBtn.classList.add("active");
+  
+  document.querySelectorAll(".payment-pane").forEach(pane => pane.classList.remove("active"));
+  const activePane = document.getElementById(`pay-pane-${method}`);
+  if (activePane) activePane.classList.add("active");
+  
+  if (method === "wallet") {
+    let subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+    let deliveryFee = (subtotal >= 1500 || isPrimeActive) ? 0.00 : 99.00;
+    let discount = 0.00;
+    if (activeCoupon === "WELCOME10") discount = subtotal * 0.10;
+    else if (activeCoupon === "PRIME20") discount = subtotal * 0.20;
+    let taxableAmount = Math.max(0, subtotal - discount);
+    let gstTax = taxableAmount * 0.18;
+    let netTotal = taxableAmount + deliveryFee + gstTax;
+    
+    const balanceInsufficient = userProfile.walletBalance < netTotal;
+    const insufficientMsg = document.getElementById("checkout-wallet-insufficient-msg");
+    const statusMsg = document.getElementById("checkout-wallet-status-msg");
+    
+    if (balanceInsufficient) {
+      if (insufficientMsg) insufficientMsg.style.display = "block";
+      if (statusMsg) statusMsg.style.display = "none";
+    } else {
+      if (insufficientMsg) insufficientMsg.style.display = "none";
+      if (statusMsg) statusMsg.style.display = "block";
+    }
+  }
+}
+
+window.selectCheckoutAddress = function(type) {
+  selectedCheckoutAddressType = type;
+  document.querySelectorAll(".address-select-card").forEach(card => card.classList.remove("active"));
+  
+  const radioHome = document.getElementById("addr-radio-home");
+  const radioWork = document.getElementById("addr-radio-work");
+  
+  if (type === "home") {
+    document.getElementById("addr-card-home").classList.add("active");
+    if (radioHome) radioHome.checked = true;
+    
+    deliveryAddress = {
+      fullName: "John Doe",
+      street: "742 Evergreen Terrace",
+      city: "New Delhi",
+      zip: "110001",
+      country: "India"
+    };
+  } else {
+    document.getElementById("addr-card-work").classList.add("active");
+    if (radioWork) radioWork.checked = true;
+    
+    deliveryAddress = {
+      fullName: "John Doe (TechCorp)",
+      street: "Building 4B, Cyber City",
+      city: "Gurugram",
+      zip: "122002",
+      country: "India"
+    };
+  }
+  updateHeaderAddress();
+}
+
+window.toggleCustomAddressForm = function() {
+  const checkbox = document.getElementById("checkout-custom-addr-toggle");
+  const form = document.getElementById("checkout-custom-address-form");
+  if (checkbox && form) {
+    if (checkbox.checked) {
+      form.style.display = "block";
+      selectedCheckoutAddressType = "custom";
+    } else {
+      form.style.display = "none";
+      selectedCheckoutAddressType = "home";
+      selectCheckoutAddress("home");
+    }
+  }
+}
+
+window.updateVisualCard = function() {
+  const nameVal = document.getElementById("card-name").value.trim() || "JOHN DOE";
+  const numVal = document.getElementById("card-number").value.trim() || "•••• •••• •••• ••••";
+  const expVal = document.getElementById("card-expiry").value.trim() || "12/28";
+  const cvvVal = document.getElementById("card-cvv").value.trim() || "•••";
+  
+  document.getElementById("visual-card-holder").textContent = nameVal.toUpperCase();
+  
+  let formattedNum = numVal.replace(/\s?/g, '').replace(/(\d{4})/g, '$1 ').trim();
+  document.getElementById("visual-card-number").textContent = formattedNum || "•••• •••• •••• ••••";
+  
+  document.getElementById("visual-card-expiry").textContent = expVal;
+  document.getElementById("visual-card-cvv").textContent = cvvVal;
+  
+  const logoLabel = document.getElementById("visual-card-logo");
+  if (logoLabel) {
+    if (numVal.startsWith("4")) {
+      logoLabel.textContent = "VISA";
+    } else if (numVal.startsWith("5")) {
+      logoLabel.textContent = "MASTERCARD";
+    } else if (numVal.startsWith("3")) {
+      logoLabel.textContent = "AMEX";
+    } else {
+      logoLabel.textContent = "CARD";
+    }
+  }
+}
+
+window.flipVisualCard = function(flipped) {
+  const card = document.getElementById("visual-credit-card");
+  if (card) {
+    if (flipped) card.classList.add("flipped");
+    else card.classList.remove("flipped");
+  }
+}
+
+window.simulateUpiScan = function() {
+  const label = document.getElementById("upi-status-label");
+  if (!label) return;
+  
+  upiPaymentApproved = false;
+  label.textContent = "Scanning QR...";
+  label.className = "upi-status-indicator loading";
+  
+  setTimeout(() => {
+    label.textContent = "Payment Approved ✔";
+    label.className = "upi-status-indicator success";
+    upiPaymentApproved = true;
+    showNotification("UPI Scan Simulator approved transaction! Click Place Order to finish.", "success");
+  }, 1800);
+}

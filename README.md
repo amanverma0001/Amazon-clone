@@ -12,7 +12,7 @@ A fully responsive, highly interactive front-end replica of Amazon Premium built
 * **Reviews System**: Realistic simulated user reviews with randomized user profiles, custom comments, star ratings, and dates.
 
 ### 2. Interactive Shopping Experience
-* **Live Search & Filter**: Instant filtering of products by title, category, or description via the top search bar, department selector, or sub-navigation bar.
+* **Live Search and Filter**: Instant filtering of products by title, category, or description via the top search bar, department selector, or sub-navigation bar.
 * **Ergonomic Quick View Modal**: View full technical specifications and user reviews inside an interactive overlay without reloading the page.
 * **Product Lightbox Zoom**: Interactively view high-resolution versions of product images inside an custom lightbox overlay with smooth zoom indicators.
 * **Interactive Wishlist**: Save items locally to a wishlist with persistent toggle hearts that update across the UI.

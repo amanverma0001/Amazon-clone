@@ -1,6 +1,6 @@
 # Premium Amazon Web Clone
 
-A fully responsive, highly interactive front-end replica of Amazon Premium built using HTML5, CSS3, and modern Vanilla JavaScript. This project runs entirely client-side, featuring a dynamic product generation catalog, dedicated feature dashboards, live search/filtering, and a offline-compatible product image pipeline.
+A fully responsive, highly interactive front-end replica of Amazon Premium built using HTML5, CSS3, and modern Vanilla JavaScript. This project runs entirely client-side, featuring a dynamic product generation catalog, dedicated feature dashboards, live search/filtering, and a offline-compatible product image pipeline..
 
 ---
 

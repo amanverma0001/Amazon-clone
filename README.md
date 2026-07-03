@@ -106,23 +106,3 @@ sequenceDiagram
 ## 👥 Contributors
 
 * **Aman Verma** ([amanverma0001](https://github.com/amanverma0001)) - Lead Developer
-
-<!-- update_amazon 1 -->
-
-<!-- update_amazon 2 -->
-
-<!-- update_amazon 3 -->
-
-<!-- update_amazon 4 -->
-
-<!-- update_amazon 5 -->
-
-<!-- update_amazon 6 -->
-
-<!-- update_amazon 7 -->
-
-<!-- update_amazon 8 -->
-
-<!-- update_amazon 9 -->
-
-<!-- update_amazon 10 -->

@@ -118,3 +118,5 @@ sequenceDiagram
 <!-- update_amazon 5 -->
 
 <!-- update_amazon 6 -->
+
+<!-- update_amazon 7 -->

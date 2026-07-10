@@ -4,7 +4,7 @@ A fully responsive, highly interactive front-end replica of Amazon Premium built
 
 ---
 
-## 🚀 Key Features
+## 🚀 Key Features.
 
 ### 1. Dynamic Catalog Engine
 * **Automatic Spec Generator**: Products are built programmatically across five categories (*Electronics, Fitness, Home & Kitchen, Fashion, Beauty*). Each item features a distinct description, calculated pricing, specific attributes, and a unique set of user reviews.
